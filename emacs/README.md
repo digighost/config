@@ -7,7 +7,7 @@
 
 3. copy all files on the home directory (cp .* ~/)
 
-
+Please share your own configs :)
 
 Contact: lefloc_l@epitech.eu
 
