@@ -8,3 +8,7 @@
 3. copy all files on the home directory (cp .* ~/)
 
 
+
+Contact: lefloc_l@epitech.eu
+
+
