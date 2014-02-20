@@ -1,8 +1,8 @@
 #!/bin/sh
 
 killall conky
-conky -dc ~/.scripts/conky/.conkyrc
-conky -dc ~/.scripts/conky/.conkyrc_calendar
-conky -dc ~/.scripts/conky/conkyrc_news
+conky -dc conkyrc
+conky -dc conkyrc_calendar
+conky -dci conkyrc_news
 
 exit
