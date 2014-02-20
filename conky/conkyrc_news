@@ -1,0 +1,65 @@
+# Conky settings #
+update_interval 1
+double_buffer yes
+no_buffers yes
+imlib_cache_size 10
+
+# Window specifications #
+gap_x 25
+gap_y 705
+alignment top_left
+minimum_size 268 620
+maximum_width 868
+own_window yes
+own_window_type desktop # other options are: override/normal/desktop/panel
+own_window_transparent yes
+own_window_hints undecorate,sticky,skip_taskbar,skip_pager,below
+border_inner_margin 0
+border_outer_margin 0
+#alignment middle_middle
+#own_window_argb_visual yes
+#own_window_argb_value 0
+
+# Graphics settings #
+draw_shades no
+default_shade_color AAAAAA
+draw_outline no
+default_outline_color AAAAAA
+draw_borders no
+draw_graph_borders no
+default_graph_size 26 80
+show_graph_scale no
+show_graph_range no
+
+# Text settings #
+use_xft yes
+xftalpha 0
+xftfont Droid Sans:size=9
+text_buffer_size 256
+override_utf8_locale yes
+
+# Useful shortenings #
+short_units yes
+pad_percents 2
+top_name_width 7
+
+# Color scheme #
+default_color DCDCDC
+color1 DCDCDC
+color2 DCDCDC
+color3 DCDCDC
+color4 F9F9F9
+color5 D64937
+color6 888888
+color7 484848
+color8 88c833
+color9 0F8AD7
+
+TEXT
+
+${color9}*** New York Times rss ***${color1}
+${rss http://rss.nytimes.com/services/xml/rss/nyt/InternationalHome.xml 10 item_titles 5 } # 10 the refresh minutes
+
+${voffset 10}
+${color9}*** Words ***${color1}
+${texeci 900 ~/.scripts/conky/words.sh}
