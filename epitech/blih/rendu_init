@@ -1,0 +1,205 @@
+#!/bin/bash
+
+exec 3<&1
+exec 4<&2
+exec 1>&-
+exec 2>&-
+
+#set -x
+
+trap control_c SIGINT
+
+[ ! -f "/usr/bin/rendu_lib" ] && echo "/usr/bin/rendu_lib not found" >&4 && exit 21
+. /usr/bin/rendu_lib
+
+VERSION=0.1
+
+MOULINETTE="ramassage-tek"
+
+PASS512=""
+BLIH="error BLIH_not_set"
+BLIH_KEY="error BLIH_not_set"
+BLIH_HOST="blih.epitech.eu"
+
+control_c()
+{
+    alert "Control-C caught. Relaunch the command if you want to be sure everything went as expected, and also rendu_init --info to check by yourself"
+    exit 42
+}
+
+
+blih_check_error()
+{
+    error "$1:
+
+$2"
+}
+
+check_remote_repo_exists()
+{
+    res=`${BLIH} info "${REPO}" 2>&4` && verbose "Repository already setup" && return 0
+    echo "$res" | grep -q "Repository creation is in progress"
+    if [ $? -eq 0 ]; then
+	verbose "Creating repository"
+	wait_for_creation || error "Repository creation takes too long. Try again later."
+	robots_rights
+	return 0
+    fi
+    echo "$res" | grep -q "404" && return 1
+    alert "Please report this unexcepted error to the staff: $res"
+    return 1
+}
+
+create_remote_repo()
+{
+    verbose "Creating repository"
+    res=`${BLIH} create "${REPO}" 2>&4` || blih_check_error "Create repository failed" "$res"
+    wait_for_creation || error "Repository creation takes too long. Try again later."
+    robots_rights
+}
+
+wait_for_creation()
+{
+    sleep 1
+    for i in `seq 30`; do
+	res=`${BLIH} info "${REPO}" 2>&4` && return 0
+	echo "$res" | grep -q "Repository creation is in progress" || blih_check_error "Unknow repository state. Please report this unexcepted error to the staff"
+	echo -en "\rWaiting for creation... (try $i/30)" >&3
+	sleep 1
+    done
+    verbose ""
+    return 1
+}
+
+blih_check_network()
+{
+    nc -z "${BLIH_HOST}" 443 || error "Can't join blih server (${BLIH_HOST}). Start checking your connection."
+}
+
+blih_access()
+{
+    if [ -z "$PASS512" ]; then
+	echo -n "Unix Password: " >&3
+	stty -echo
+	read pass
+	stty echo
+	verbose ""
+	PASS512=`echo -n "$pass" | sha512sum | cut -f1 -d' '`
+    fi
+    BLIH="blih -u ${LOGIN} -t ${PASS512} repository"
+    BLIH_KEY="blih -u ${LOGIN} -t ${PASS512} sshkey"
+    blih_check_network
+    res=`${BLIH} list`
+    [ $? -eq 1 ] && echo $res | grep -q 401 && error "Invalid Password"
+}
+
+robots_rights()
+{
+    res=`${BLIH} getacl "${REPO}" 2>&4 | grep -q "${MOULINETTE}:r"` && return
+    verbose "Pushing rights for pick-up robots"
+    res=`${BLIH} setacl "${REPO}" "${MOULINETTE}" r 2>&4` || blih_check_error "Failed to push rights for ${MOULINETTE}" "$res"
+}
+
+reset_rights()
+{
+    acls=`${BLIH} getacl "${REPO}" 2>&4` || blih_check_error "Getacl on ${REPO} failed" "$acls"
+    for acl in $acls
+    do
+	login=`echo $acl | cut -f1 -d:`
+	[ "$login" = "${LOGIN}" ] && continue
+	verbose "Removing rights for $login"
+	${BLIH} setacl "${REPO}" "${login}" >&3 2>&4
+    done
+    robots_rights
+}
+
+sshkey()
+{
+    if [ ! -f "${HOME}/.ssh/id_rsa_blih" ]
+    then
+ 	ssh-keygen -q -t rsa -f "${HOME}/.ssh/id_rsa_blih" -N "" -C "${LOGIN}@`uname -n`@`date +%d%m%y-%H%M`" || error "Generate sshkey failed"
+	${BLIH_KEY} upload "${HOME}/.ssh/id_rsa_blih.pub" >&3 2>&4
+	if [ $? -eq 1 ]; then
+	    rm -f "${HOME}/.ssh/id_rsa_blih"
+	    error "Push sshkey on server failed"
+	fi
+    fi
+    grep -q -E "^Host git git.epitech.eu git.epitech.net" "${HOME}/.ssh/config" 2>/dev/null
+    if [ $? -ne 0 ]; then
+	echo "Host git git.epitech.eu git.epitech.net
+     ForwardAgent yes" 1>&3 >> "${HOME}/.ssh/config"
+	[ $? -ne 0 ] && error "Can't write .ssh/config"
+    fi
+}
+
+info()
+{
+    blih_access
+    blih_check_network
+    verbose ""
+    ${BLIH} info "${REPO}" >&3 2>&4
+    verbose ""
+    verbose "Rights list:"
+    ${BLIH} getacl "${REPO}" >&3 2>&4
+    verbose ""
+}
+
+init()
+{
+    _init
+    blih_access
+}
+
+usage()
+{
+    verbose "
+$1 => Setup the current directory for future turn-in. You must be at the root project's directory (e.g.: ~/rendu/my_project/)
+
+$1 -i | --info => Show infos on current repository state & rights.
+$1 -r | --reset => Reset rights on the repository to default (${MOULINETTE}:r).
+
+$1 -h | --help => This usage.
+$1 -v | --version => Version.
+
+Hint
+
+    Login: You may change the login used by setting LOGIN in your env (e.g.: LOGIN=login_x rendu)"
+}
+
+#which python3 >/dev/null 2>/dev/null || error "Python3 not installed"
+#which blih >/dev/null 2>/dev/null || error "blih not installed"
+
+if [ $# -gt 1 ]
+then
+    usage
+    exit 1
+fi
+if [ $# -eq 0 ]
+then
+    init
+    sshkey
+    check_remote_repo_exists || create_remote_repo
+    robots_rights
+else
+    case "$1" in
+	"--reset" | "-r")
+	    init
+	    reset_rights
+	    ;;
+	"--info" | "-i")
+	    init	    
+	    info
+	    ;;
+	"--help" | "-h")
+	    usage "$0"
+	;;
+    	"--version" | "-v")
+	    verbose "${VERSION}"
+	    ;;
+	*)
+	    usage "$0" && exit 1
+	    ;;
+    esac
+fi
+exit 0
+
