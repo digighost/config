@@ -9,6 +9,11 @@
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
 
+;; numero de ligne
+(load "~/.emacs.d/linum.el")
+(require 'linum)
+(global-linum-mode 1)
+
 ;; comment if autopair.el is in standard load path
 (require 'autopair)
 (autopair-global-mode)
