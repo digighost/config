@@ -3,3 +3,8 @@
 .vim/c_epi.tpl change [NAME] by first name last name
 
 headers are automatically made when we create a new file (cf .vimrc)
+
+plugins:
+  - vim-multiple-cursors
+  - vim-buffergator
+  - fugitive (git support)

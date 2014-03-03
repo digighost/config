@@ -8,6 +8,19 @@
 "imap <left> <nop>
 "imap <right> <nop>
 
+" Tag bar
+map <F4> :TagbarToggle<CR>
+
+" buffers
+nnoremap <F5> :buffers<CR>:buffer<Space>
+
+map <C-w> :BuffergatorToggle<CR>
+nnoremap <C-a> :UndotreeToggle<cr>
+map <C-e> :NERDTreeToggle<CR>:NERDTreeMirror<CR>
+map <leader>e :NERDTreeFind<CR>
+nmap <leader>nt :NERDTreeFind<CR>
+
+
 " Définit le répertoire de sauvegarde
 set backupdir=$HOME/.vim/backup
 set directory=$HOME/.vim/backup
@@ -46,7 +59,8 @@ if has('statusline')
 " Broken down into easily includeable segments
         set statusline=%<%f\ " Filename
         set statusline+=%w%h%m%r " Options
-        set statusline+=%{fugitive#statusline()} " Git Hotness
+
+ "set statusline+=%{fugitive#statusline()} " Git Hotness
         set statusline+=\ [%{&ff}/%Y] " Filetype
         set statusline+=\ [%{getcwd()}] " Current dir
         set statusline+=%=%-14.(%l,%c%V%)\ %p%% " Right aligned file nav info
@@ -100,7 +114,6 @@ if has("persistent_undo")
     "set undodir = '~/.vim/.undodir/'
 "    set undofile " create .*.un files ><
 endif
-nnoremap <F4> :UndotreeToggle<cr>
 
 " Theme
 "syntax enable
@@ -162,9 +175,6 @@ highlight ExtraWhitespaces ctermbg=RED guibg=#A00000
 highlight ExtraCaractere ctermbg=124 guibg=#A00000
 
  " NerdTree
-map <C-e> :NERDTreeToggle<CR>:NERDTreeMirror<CR>
-map <leader>e :NERDTreeFind<CR>
-nmap <leader>nt :NERDTreeFind<CR>
 let NERDTreeShowBookmarks=1
 let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr']
 let NERDTreeChDirMode=0
@@ -173,14 +183,6 @@ let NERDTreeMouseMode=2
 let NERDTreeShowHidden=1
 let NERDTreeKeepTreeInNewTab=1
 "let :nerdtree_tabs_open_on_gui_startup=0
-
-" Tag bar
-nmap <F8> :TagbarToggle<CR>
-
-
-" buffers
-nnoremap <F5> :buffers<CR>:buffer<Space>
-
 
 " ================================================== Aucocomplete
 
