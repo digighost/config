@@ -1,3 +1,36 @@
+##
+# Black       0;30     Dark Gray     1;30
+# Blue        0;34     Light Blue    1;34
+# Green       0;32     Light Green   1;32
+# Cyan        0;36     Light Cyan    1;36
+# Red         0;31     Light Red     1;31
+# Purple      0;35     Light Purple  1;35
+# Brown       0;33     Yellow        1;33
+# Light Gray  0;37     White         1;37
+##
+# \a     an ASCII bell character (07)
+# \d     the date  in  "Weekday  Month  Date"  format
+#        (e.g., "Tue May 26")
+# \e     an ASCII escape character (033)
+# \h     the hostname up to the first `.'
+# \H     the hostname
+# \j     the  number of jobs currently managed by the shell
+# \l     the basename of the shell's terminal device name
+# \n     newline
+# \r     carriage return
+# \s     the  name  of  the shell, the basename of $0
+#        (the portion following the final slash)
+# \t     the current time in 24-hour HH:MM:SS format
+# \T     the current time in 12-hour HH:MM:SS format
+# \@     the current time in 12-hour am/pm format
+# \u     the username of the current user
+# \v     the version of bash (e.g., 2.00)
+# \V     the release of bash,  version  +  patchlevel
+# \w     the current working directory
+# \W     the  basename  of the current working direcory
+##
+
+
 # ========================================================== #
 # ENV
 # ========================================================== #
@@ -11,8 +44,9 @@ export pager='less -e'
 # ========================================================== #
 GREEN="\[\033[0;32m\]"
 BLUE="\[\033[36m\]"
+RED="\[\033[1;31m\]"
 NO_COLOUR="\[\033[0m\]"
-  
+
 # ========================================================== #
 # History
 # ========================================================== #
@@ -43,8 +77,9 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 # PROMPT
 # ========================================================== #
 
-function set_prompt {
-  PS1="\n$GREEN[\$(date +%H:%M)] $BLUE\w $NO_COLOUR>"
+function set_prompt
+{
+	PS1="\r\n$RED[\u] $GREEN[\$(date +%H:%M)] $BLUE[\w] $NO_COLOUR>"
 }
 set_prompt;
 
@@ -221,12 +256,13 @@ function google()
 # ========================================================== #
 # Welcome message
 # ========================================================== #
-figlet "Welcome " $USER;
+#figlet -c "Welcome " $USER;
 echo -e ""
-echo -ne "Today is "; date
-echo -ne "Up time:";uptime | awk /'up/'
+date
+echo -ne "Uptime:";uptime | awk /'up/'
 echo "";
-
+iamcow
+echo "==============================================";
 
 
 # ========================================================== #

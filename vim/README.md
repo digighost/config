@@ -5,6 +5,14 @@
 headers are automatically made when we create a new file (cf .vimrc)
 
 plugins:
-  - vim-multiple-cursors
-  - vim-buffergator
+  - vim-multiple-cursors (https://github.com/terryma/vim-multiple-cursors)
+  - vim-buffergator (https://github.com/jeetsukumaran/vim-buffergator)
   - fugitive (git support)
+  - nerdtree
+  - tabular
+  - undotree
+  - vimshell
+  - tagbar
+  - nerdcommenter
+  - neocomplcache
+  - syntastic: show errors : :lnext/ :lprev for jump between errors (https://github.com/scrooloose/syntastic)

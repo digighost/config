@@ -361,6 +361,12 @@ au BufNewFile {*.{c{,c,++,pp},h{,h,pp}},Makefile} call Epi_CHeader_Insert()
 au BufWritePre {*.{c{,c,++,pp},h{,h,pp}},Makefile} call UpdateHeaderDate()
 "au BufWinEnter,BufNew {*.{c{,c,++,pp},h{,h}},Makefile} call Handle_Spaces()
 
+" syntastic
+let g:syntastic_always_populate_loc_list=1
+" :lnext :lprev
+
+
+
 " ======= GUI
 set guioptions-=T "hide toolbar
 set guioptions+=e " add tab pages
