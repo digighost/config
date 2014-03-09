@@ -1,3 +1,5 @@
+set nocompatible " must be first line
+
 "disable arrow keys
 "map <up> <nop>
 "map <down> <nop>
@@ -8,32 +10,71 @@
 "imap <left> <nop>
 "imap <right> <nop>
 
-" Tag bar
-map <F4> :TagbarToggle<CR>
+" in all modes (:map and :noremap), one that works in normal mode (:nmap and :nnoremap), one in visual mode (:vmap and :vnoremap)
+
+" pathogen. the next two lines verify if ~/.vim/bundle/ works correctly
+runtime! autoload/pathogen.vim
+silent! call pathogen\#helptags()
+silent! call pathogen#infect()
+
+let mapleader = "\\"
+
+" middle-click paste
+map! <S-Insert> <MiddleMouse>
 
 " buffers
-nnoremap <F5> :buffers<CR>:buffer<Space>
+map	<C-d>		:BuffergatorToggle<CR>
+map	<C-a>		:UndotreeToggle<cr>
+map	<F4>		:TagbarToggle<CR>
+map	<C-e>		:NERDTreeToggle<CR>:NERDTreeMirror<CR>
+map	<C-s>		:w <CR>
+map	<leader>e	:NERDTreeFind<CR>
+nmap	<leader>nt	:NERDTreeFind<CR>
 
-map <C-w> :BuffergatorToggle<CR>
-nnoremap <C-a> :UndotreeToggle<cr>
-map <C-e> :NERDTreeToggle<CR>:NERDTreeMirror<CR>
-map <leader>e :NERDTreeFind<CR>
-nmap <leader>nt :NERDTreeFind<CR>
+map	<A><Left>	:tabprev<CR>
+map	<A><Right>	:tabnext<CR>
 
+map	<C><Left>	:bn<CR>
+map	<C><Right>	:bp<CR>
+" Close the current buffer
+map	<leader>bd	:Bclose<cr>I
+map	<leader>ba	:1,1000 bd!<cr> " Close all the buffers"
+map	<C-t>		:tabnew<cr>
+map	<Leader>to	:tabonly<cr>
+map	<Leader>tc	:tabclose<cr>
+map	<Leader>tm	:tabmove<cr>
+map	<leader>te	:tabedit <c-r>=expand("%:p:h")<cr> " Opens a new tab with the current buffer's path
+
+ " Easier moving in tabs and windows
+map <C-J> <C-W>j<C-W>_
+map <C-K> <C-W>k<C-W>_
+map <C-L> <C-W>l<C-W>_
+map <C-H> <C-W>h<C-W>_
+map <C-K> <C-W>k<C-W>_
+
+noremap <Leader>cd	:lcd %:h<CR>:pwd<CR>
+
+" fugitive shortcuts
+noremap <Leader>gs	:Gstatus<CR>
+noremap <Leader>gc	:Gcommit<CR>
+noremap <Leader>ga	:Gwrite<CR>
+noremap <Leader>gl	:Glog<CR>
+noremap <Leader>gd	:Gdiff<CR>
+noremap <Leader>gb	:Gblame<CR>
+
+" Ignore compiled files
+set wildignore=*.o,*~,*.pyc
 
 " Définit le répertoire de sauvegarde
 set backupdir=$HOME/.vim/backup
 set directory=$HOME/.vim/backup
 
-"if &term == 'xterm' || &term == 'screen'
-	set t_Co=256
- "   set t_AB=^[[48;5;%dm
-  "  set t_AF=^[[38;5;%dm
-"endif
+set shell=bash " define the shell
+set shellcmdflag=-ic " load .bashrc
 
-" TESTS
-"add color to bottom bar
-au BufNewFile,BufRead,BufEnter *.cpp,*.hpp set omnifunc=omni#cpp#complete#Main
+set t_Co=256
+
+
 
 let g:airline_theme = 'powerlineish'
 if !exists('g:airline_powerline_fonts')
@@ -48,11 +89,9 @@ endif
 "set cursorline " Highlight current line
 
 highlight clear SignColumn " SignColumn should match background for
-" things like vim-gitgutter
+highlight clear LineNr " Current line number row will have same background color in relative mode.
 
-    highlight clear LineNr " Current line number row will have same background color in relative mode.
-" Things like vim-gitgutter will match LineNr highlight
-"highlight clear CursorLineNr " Remove highlight color from current line number
+" always show status bar
 if has('statusline')
         set laststatus=2
 
@@ -78,8 +117,8 @@ filetype plugin on
     set nojoinspaces " Prevents inserting two spaces after punctuation on a join (J)
     set splitright " Puts new vsplit windows to the right of the current
     set splitbelow " Puts new split windows to the bottom of the current
-
-set backspace=indent,eol,start " Backspace for dummies
+    set cursorline
+    set backspace=indent,eol,start " Backspace for dummies
     set linespace=0 " No extra spaces between rows
     set nu " Line numbers on
     set showmatch " Show matching brackets/parenthesis
@@ -98,58 +137,39 @@ set backspace=indent,eol,start " Backspace for dummies
     set foldnestmax=1
     set nofoldenable
     set list
+    set gdefault " put /g flag on :s substitutions
     set listchars=tab:›\ ,trail:•,extends:#,nbsp:. " Highlight problematic whitespace
-    set hidden                          " Allow buffer switching without saving
-
-    " met en rouges les chars. depassant la 80e col.
-   let ext = expand("%:e")
-   if (ext == "h" || ext == "c")
-     set comments=sr:/*,mb:**,ex:*/ " it seems it doesn't work when
-     set showfulltag     " when completing by tag, show the whole tag
-     highlight OverLength ctermfg=red guibg=#592929
-     match OverLength /\%81v.\+/
-   endif
-
-if has("persistent_undo")
-    "set undodir = '~/.vim/.undodir/'
-"    set undofile " create .*.un files ><
-endif
+    " set autowrite " write the file when leaving a modified buffer
+set hidden                          " Allow buffer switching without saving
 
 " Theme
-"syntax enable
-"set background=dark
-"let g:solarized_termcolors=256
-"let g:solarized_termtrans=1
-"let g:solarized_contrast="normal"
-"let g:solarized_visibility="normal"
-let g:molokai_original = 1
-"colorscheme github
-colorscheme molokai
-" Active la coloration syntaxique
 syntax on
 syntax sync fromstart
 
-call pathogen#incubate()
+let g:molokai_original = 1
+colorscheme molokai
 
-set nocompatible
+" override some highlight settings (turn off stupid italics in Molokai)
+highlight ColorColumn ctermbg=235 guibg=#2c2d27
+highlight CursorLine ctermbg=235 guibg=#2c2d27
+highlight CursorColumn ctermbg=235 guibg=#2c2d27
+highlight DiffText gui=none
+highlight Macro gui=none
+highlight SpecialKey gui=none
+highlight Special gui=none
+highlight StorageClass gui=none
+highlight Tag gui=none
 
 " Definit l'espace avant les numéros
 set numberwidth=5
 
-" Affiche une barre de status en bas de l'écran
-"set laststatus=2
-"set statusline=%<%f%h%m%r%=%l,%c\ %P
-
 " Supprime automatiquement les espaces de fin de ligne
 autocmd BufWritePre * :%s/\s\+$//e
-
-" Affiche les tabulations et les espaces invisibles
-"set list
-"set listchars=tab:>-,trail:-
 
 " Définit le nombre de commande dans l'historique
 set history=100
 set mouse=a
+set mousemodel=popup " right-click pops up context menu
 " Affiche toujours 10 lignes avant et après le curseur
 set scrolloff=10
 
@@ -197,7 +217,7 @@ let NERDTreeKeepTreeInNewTab=1
 
       set nocp
       filetype plugin on
-      " configure tags - add additional tags here or comment out not-used ones
+
       set tags+=~/.vim/tags/cpp
       "set tags+=~/.vim/tags/gl
       "set tags+=~/.vim/tags/sdl
@@ -231,12 +251,7 @@ let g:neocomplcache_enable_smart_case = 1
 let g:neocomplcache_min_syntax_length = 3
 let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
 
-" Enable heavy features.
-" Use camel case completion.
-"let g:neocomplcache_enable_camel_case_completion = 1
-" Use underbar completion.
-"let g:neocomplcache_enable_underbar_completion = 1
-set tag+=~/.vim/tags/cpp " ?? marche ?
+set tag+=~/.vim/tags/cpp
 " Define dictionary.
 let g:neocomplcache_dictionary_filetype_lists = {
       \ 'default' : '',
@@ -269,28 +284,7 @@ let g:neocomplcache_dictionary_filetype_lists = {
         inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
         inoremap <expr><C-y>  neocomplcache#close_popup()
   inoremap <expr><C-e>  neocomplcache#cancel_popup()
-  " Close popup by <Space>.
-  "inoremap <expr><Space> pumvisible() ? neocomplcache#close_popup() : "\<Space>"
-
-  " For cursor moving in insert mode(Not recommended)
-  "inoremap <expr><Left>  neocomplcache#close_popup() . "\<Left>"
-  "inoremap <expr><Right> neocomplcache#close_popup() . "\<Right>"
-  "inoremap <expr><Up>    neocomplcache#close_popup() . "\<Up>"
-  "inoremap <expr><Down>  neocomplcache#close_popup() . "\<Down>"
-  " Or set this.
   let g:neocomplcache_enable_cursor_hold_i = 1
-  " Or set this.
-  "let g:neocomplcache_enable_insert_char_pre = 1
-
-  " AutoComplPop like behavior.
-  "let g:neocomplcache_enable_auto_select = 1
-
-  " Shell like behavior(not recommended).
-  "set completeopt+=longest
-  "let g:neocomplcache_enable_auto_select = 1
-  "let g:neocomplcache_disable_auto_complete = 1
-  "inoremap <expr><TAB>  pumvisible() ? "\<Down>" : "\<C-x>\<C-u>"
-
   " Enable omni completion.
   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
   autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
@@ -331,7 +325,7 @@ function SetHeader()
   execute "%s,@@PNAME@@," . substitute(substitute(expand("%:p"),'/[^/]*$', "","ge"), "^.*/", "", "ge") . ",ge"
   execute "%s,@@FPATH@@," . substitute(expand("%:p"), '/[^/]*$', "", "ge") . ",ge"
   execute "%s,@@AUTHOR@@," . $NAME . ",ge"
-  execute "%s,@@AUTHORMAIL@@,[MAIL],ge"
+  execute "%s,@@AUTHORMAIL@@,lefloc_l@epitech.eu,ge"
   execute "%s,@@CDATE@@," . strftime("%a %b %d %H:%M:%S %Y") . ",ge"
   call setpos('.', save_cursor)
 endfunction
@@ -355,17 +349,30 @@ function Epi_CHeader_Insert()
   normal G
 endfunction
 
-
 au BufNewFile {*.h{,h}} call Epi_CHHeader_Insert()
 au BufNewFile {*.{c{,c,++,pp},h{,h,pp}},Makefile} call Epi_CHeader_Insert()
 au BufWritePre {*.{c{,c,++,pp},h{,h,pp}},Makefile} call UpdateHeaderDate()
-"au BufWinEnter,BufNew {*.{c{,c,++,pp},h{,h}},Makefile} call Handle_Spaces()
+
+au BufNewFile,BufRead,BufEnter *.cpp,*.hpp set omnifunc=omni#cpp#complete#Main
+
+" change color for the colorcolumn
+highlight ColorColumn ctermbg=235 guibg=#2c2d27
+" change color for the current column number
+hi CursorLineNr   term=bold ctermfg=Red gui=bold guifg=Red
+au BufNewFile,BufRead {*.{c,h}} set colorcolumn=80
+
+" met en rouges les chars. depassant la 80e col.
+ let ext = expand("%:e")
+ if (ext == "h" || ext == "c")
+   set comments=sr:/*,mb:**,ex:*/ " it seems it doesn't work when
+   set showfulltag     " when completing by tag, show the whole tag
+   highlight OverLength ctermfg=red guibg=#592929
+   match OverLength /\%80v.\+/
+ endif
 
 " syntastic
 let g:syntastic_always_populate_loc_list=1
 " :lnext :lprev
-
-
 
 " ======= GUI
 set guioptions-=T "hide toolbar
