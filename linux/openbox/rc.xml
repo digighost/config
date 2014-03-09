@@ -40,7 +40,7 @@
                     'Active' - where the active window is -->
   </placement>
   <theme>
-    <name>Mire_v2_lime</name>
+    <name>mytheme</name>
     <titleLayout>DSLIMC</titleLayout>
     <!--
       avaible characters are NDSLIMC, each can occur at most once.
@@ -277,7 +277,7 @@
       </action>
     </keybind>
     <!-- Keybindings for window switching -->
-    <keybind key="W-Tab">
+    <keybind key="A-Tab">
       <action name="NextWindow">
         <finalactions>
           <action name="Focus"/>
@@ -306,7 +306,7 @@
         </finalactions>
       </action>
     </keybind>
-    <!-- Keybindings for window switching with the arrow keys 
+    <!-- Keybindings for window switching with the arrow keys
   <keybind key="W-S-Right">
     <action name="DirectionalCycleWindows">
       <direction>right</direction>
@@ -498,7 +498,7 @@
         <command>cb-exit</command>
       </action>
     </keybind>
-    <keybind key="A-Tab">
+    <keybind key="W-Tab">
       <action name="ShowMenu">
         <menu>client-list-combined-menu</menu>
       </action>
@@ -513,7 +513,7 @@
         <menu>root-menu</menu>
       </action>
     </keybind>
-    <!-- A bit of tiling 
+    <!-- A bit of tiling
     <keybind key="W-Right">
       <action name="GrowToEdgeEast"/>
     </keybind>

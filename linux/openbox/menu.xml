@@ -12,7 +12,7 @@
 		<item label="Terminal">
 			<action name="Execute">
 				<command>
-					terminator
+					terminator -T "loic lefloch"
 				</command>
 			</action>
 		</item>
@@ -40,239 +40,248 @@
 		<item label="Calendar">de
 			<action name="Execute">
 				<command>
-					firefox https://www.google.com/calendar/render?tab=wc
-				</command>
-			</action>
-		</item>
-		<item label="Media Player">
-			<action name="Execute">
-				<command>
-					vlc
+					~/documents/firefox/firefox https://www.google.com/calendar/render?tab=wc
 				</command>
 			</action>
 		</item>
 		<separator/>
-		<menu id="root-menu-153859" label="Dev">
-			<item label="GVim">
-				<action name="Execute">
-					<command>gvim</command>
-				</action>
-			</item>
-			<item label="QGit">
-				<action name="Execute">
-					<command>QGit</command>
-				</action>
-			</item>
-			<item label="Sublime Text">
-				<action name="Execute">
-					<command>~/.scripts/SublimeText2/sublime_text</command>
-				</action>
-			</item>
-			<item label="QtCreator">
-				<action name="Execute">
-					<command>qtcreator</command>
-				</action>
-			</item>
-		</menu>
-		
-		<menu id="network" label="Network">
-			<menu execute="cb-x-www-browser-pipemenu" id="wwwbrowsers" label="WWW Browsers"/>
-			<item label="gFTP Client">
-				<action name="Execute">
-					<command>
-						gftp
-					</command>
-				</action>
-			</item>
-			<item label="Transmission BitTorrent Client">
-				<action name="Execute">
-					<command>
-						transmission-gtk
-					</command>
-				</action>
-			</item>
-			<item label="XChat IRC Client">
-				<action name="Execute">
-					<command>
-						xchat
-					</command>
-				</action>
-			</item>
-			<item label="Remote Filesystems">
-				<action name="Execute">
-					<command>
-						gigolo
-					</command>
-				</action>
-			</item>
-			<menu execute="cb-remote-desktop-pipemenu" id="remotedesktop" label="Remote Desktop"/>
-			<menu execute="cb-sshconfig-pipemenu" id="sshconfig" label="SSH"/>
-			<separator label="Services"/>
-			<menu execute="cb-dropbox-pipemenu" id="dropbox" label="Dropbox"/>
-		</menu>
-		<menu id="accessories" label="Accessories">
-			<item label="Catfish File Search">
-				<action name="Execute">
-					<command>
-						catfish
-					</command>
-				</action>
-			</item>
-			<item label="Archive Manager">
-				<action name="Execute">
-					<command>
-						file-roller
-					</command>
-				</action>
-			</item>
-			<item label="Geany Text Editor">
-				<action name="Execute">
-					<command>
-						geany
-					</command>
-				</action>
-			</item>
-			<item label="Task Manager (htop)">
-				<action name="Execute">
-					<command>terminator --command=&quot;htop&quot;</command>
-				</action>
-			</item>
-			<item label="Terminator Terminal">
-				<action name="Execute">
-					<command>
-						terminator
-					</command>
-				</action>
-			</item>
-			<item label="Thunar File Manager">
-				<action name="Execute">
-					<command>
-						thunar
-					</command>
-				</action>
-			</item>
-			<item label="Thunar File Manager (root)">
-				<action name="Execute">
-					<command>
-						gksudo thunar
-					</command>
-				</action>
-			</item>
-		</menu>
-		<menu id="graphics" label="Graphics">
-			<item label="GIMP">
-				<action name="Execute">
-					<command>
-						gimp
-					</command>
-				</action>
-			</item>
-			<item label="Viewnior Image Viewer">
-				<action name="Execute">
-					<command>
-						viewnior
-					</command>
-				</action>
-			</item>
-			<menu id="graphicsScreenshots" label="Take Screenshot">
-				<item label="Screenshooter">
+		<menu id='devmenu' label='Utils'>
+			<menu id="root-menu-153859" label="Dev">
+				<item label="GVim">
 					<action name="Execute">
-						<command>
-							xfce4-screenshooter
-						</command>
+						<command>gvim</command>
 					</action>
 				</item>
-				<separator label="scrot"/>
-				<item label="Now">
+				<item label="QGit">
 					<action name="Execute">
-						<command>
-							scrot '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; viewnior ~/images/$f'
-						</command>
+						<command>qgit</command>
 					</action>
 				</item>
-				<item label="In 5 Seconds...">
+				<item label="Sublime Text">
 					<action name="Execute">
-						<command>
-							scrot -d 5 '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; viewnior ~/images/$f'
-						</command>
+						<command>~/.scripts/SublimeText2/sublime_text</command>
 					</action>
 				</item>
-				<item label="In 10 Seconds...">
+				<item label="QtCreator">
 					<action name="Execute">
-						<command>
-							scrot -d 10 '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; viewnior ~/images/$f'
-						</command>
-					</action>
-				</item>
-				<item label="Selected Area... (click &amp; drag mouse)">
-					<action name="Execute">
-						<command>
-							scrot -s '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; viewnior ~/images/$f'
-						</command>
+						<command>qtcreator</command>
 					</action>
 				</item>
 			</menu>
-		</menu>
-		<menu id="multimedia" label="Multimedia">
-			<item label="VLC Media Player">
+			<item label="Media Player">
 				<action name="Execute">
 					<command>
 						vlc
 					</command>
 				</action>
 			</item>
-			<item label="Volume Control">
-				<action name="Execute">
-					<command>
-						pavucontrol
-					</command>
-				</action>
+			<item label="notes">
+				tomboy
 			</item>
-			<item label="Xfburn">
-				<action name="Execute">
-					<command>
-						xfburn
-					</command>
-				</action>
+			<item label="rss - lifarea">
+				lifearea
 			</item>
 		</menu>
-		<menu id="office" label="Office">
-			<menu execute="cb-libreoffice-pipemenu" id="libreoffice" label="LibreOffice"/>
-			<item label="Google Docs">
-				<action name="Execute">
-					<command>
-						firefox https://drive.google.com/
-					</command>
-				</action>
-			</item>
-			<item label="AbiWord Word Processor">
-				<action name="Execute">
-					<command>
-						abiword
-					</command>
-				</action>
-			</item>
-			<item label="Gnumeric Spreadsheet">
-				<action name="Execute">
-					<command>
-						gnumeric
-					</command>
-				</action>
-			</item>
-			<item label="Calculator">
-				<action name="Execute">
-					<command>
-						galculator
-					</command>
-				</action>
-			</item>
-			<item label="Evince PDF Viewer">
-				<action name="Execute">
-					<command>
-						evince
-					</command>
-				</action>
-			</item>
+		<menu id="other" label="Other">
+			<menu id="network" label="Network">
+				<menu execute="cb-x-www-browser-pipemenu" id="wwwbrowsers" label="WWW Browsers"/>
+				<item label="gFTP Client">
+					<action name="Execute">
+						<command>
+							gftp
+						</command>
+					</action>
+				</item>
+				<item label="Transmission BitTorrent Client">
+					<action name="Execute">
+						<command>
+							transmission-gtk
+						</command>
+					</action>
+				</item>
+				<item label="XChat IRC Client">
+					<action name="Execute">
+						<command>
+							xchat
+						</command>
+					</action>
+				</item>
+				<item label="Remote Filesystems">
+					<action name="Execute">
+						<command>
+							gigolo
+						</command>
+					</action>
+				</item>
+				<menu execute="cb-remote-desktop-pipemenu" id="remotedesktop" label="Remote Desktop"/>
+				<menu execute="cb-sshconfig-pipemenu" id="sshconfig" label="SSH"/>
+				<separator label="Services"/>
+				<menu execute="cb-dropbox-pipemenu" id="dropbox" label="Dropbox"/>
+			</menu>
+			<menu id="accessories" label="Accessories">
+				<item label="Catfish File Search">
+					<action name="Execute">
+						<command>
+							catfish
+						</command>
+					</action>
+				</item>
+				<item label="Archive Manager">
+					<action name="Execute">
+						<command>
+							file-roller
+						</command>
+					</action>
+				</item>
+				<item label="Geany Text Editor">
+					<action name="Execute">
+						<command>
+							geany
+						</command>
+					</action>
+				</item>
+				<item label="Task Manager (htop)">
+					<action name="Execute">
+						<command>terminator --command=&quot;htop&quot;</command>
+					</action>
+				</item>
+				<item label="Terminator Terminal">
+					<action name="Execute">
+						<command>
+							terminator
+						</command>
+					</action>
+				</item>
+				<item label="Thunar File Manager">
+					<action name="Execute">
+						<command>
+							thunar
+						</command>
+					</action>
+				</item>
+				<item label="Thunar File Manager (root)">
+					<action name="Execute">
+						<command>
+							gksudo thunar
+						</command>
+					</action>
+				</item>
+			</menu>
+			<menu id="graphics" label="Graphics">
+				<item label="GIMP">
+					<action name="Execute">
+						<command>
+							gimp
+						</command>
+					</action>
+				</item>
+				<item label="Viewnior Image Viewer">
+					<action name="Execute">
+						<command>
+							viewnior
+						</command>
+					</action>
+				</item>
+				<menu id="graphicsScreenshots" label="Take Screenshot">
+					<item label="Screenshooter">
+						<action name="Execute">
+							<command>
+								xfce4-screenshooter
+							</command>
+						</action>
+					</item>
+					<separator label="scrot"/>
+					<item label="Now">
+						<action name="Execute">
+							<command>
+								scrot '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; viewnior ~/images/$f'
+							</command>
+						</action>
+					</item>
+					<item label="In 5 Seconds...">
+						<action name="Execute">
+							<command>
+								scrot -d 5 '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; viewnior ~/images/$f'
+							</command>
+						</action>
+					</item>
+					<item label="In 10 Seconds...">
+						<action name="Execute">
+							<command>
+								scrot -d 10 '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; viewnior ~/images/$f'
+							</command>
+						</action>
+					</item>
+					<item label="Selected Area... (click &amp; drag mouse)">
+						<action name="Execute">
+							<command>
+								scrot -s '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; viewnior ~/images/$f'
+							</command>
+						</action>
+					</item>
+				</menu>
+			</menu>
+			<menu id="multimedia" label="Multimedia">
+				<item label="VLC Media Player">
+					<action name="Execute">
+						<command>
+							vlc
+						</command>
+					</action>
+				</item>
+				<item label="Volume Control">
+					<action name="Execute">
+						<command>
+							pavucontrol
+						</command>
+					</action>
+				</item>
+				<item label="Xfburn">
+					<action name="Execute">
+						<command>
+							xfburn
+						</command>
+					</action>
+				</item>
+			</menu>
+			<menu id="office" label="Office">
+				<menu execute="cb-libreoffice-pipemenu" id="libreoffice" label="LibreOffice"/>
+				<item label="Google Docs">
+					<action name="Execute">
+						<command>
+							~/documents/firefox/firefox https://drive.google.com/
+						</command>
+					</action>
+				</item>
+				<item label="AbiWord Word Processor">
+					<action name="Execute">
+						<command>
+							abiword
+						</command>
+					</action>
+				</item>
+				<item label="Gnumeric Spreadsheet">
+					<action name="Execute">
+						<command>
+							gnumeric
+						</command>
+					</action>
+				</item>
+				<item label="Calculator">
+					<action name="Execute">
+						<command>
+							galculator
+						</command>
+					</action>
+				</item>
+				<item label="Evince PDF Viewer">
+					<action name="Execute">
+						<command>
+							evince
+						</command>
+					</action>
+				</item>
+			</menu>
 		</menu>
 		<separator/>
 		<menu execute="cb-places-pipemenu" id="pipe-placesmenu" label="Places"/>
@@ -306,7 +315,7 @@
 				<item label="Wiki Page">
 					<action name="Execute">
 						<command>
-							firefox http://crunchbanglinux.org/wiki/conky
+							~/documents/firefox/firefox http://crunchbanglinux.org/wiki/conky
 						</command>
 					</action>
 				</item>
@@ -440,7 +449,7 @@
 				<item label="Online Help">
 					<action name="Execute">
 						<command>
-							firefox http://code.google.com/p/tint2/wiki/Welcome
+							~/documents/firefox/firefox http://code.google.com/p/tint2/wiki/Welcome
 						</command>
 					</action>
 				</item>
