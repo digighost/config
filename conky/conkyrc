@@ -1,0 +1,187 @@
+# Conky settings #
+update_interval 1
+double_buffer yes
+no_buffers yes
+imlib_cache_size 10
+
+# Window specifications #
+gap_x 5
+gap_y 55
+alignment top_right
+minimum_size 268 1020
+maximum_width 268
+own_window yes
+own_window_type desktop # other options are: override/normal/desktop/panel
+own_window_transparent yes
+own_window_hints undecorate,sticky,skip_taskbar,skip_pager,below
+border_inner_margin 0
+border_outer_margin 0
+#alignment middle_middle
+#own_window_argb_visual yes
+#own_window_argb_value 0
+
+# Graphics settings #
+draw_shades no
+default_shade_color AAAAAA
+draw_outline no
+default_outline_color AAAAAA
+draw_borders no
+draw_graph_borders no
+default_graph_size 26 80
+show_graph_scale no
+show_graph_range no
+
+# Text settings #
+use_xft yes
+xftalpha 0
+xftfont Droid Sans:size=8
+text_buffer_size 256
+override_utf8_locale yes
+
+# Useful shortenings #
+short_units yes
+pad_percents 2
+top_name_width 7
+
+# Color scheme #
+default_color DCDCDC
+color1 DCDCDC
+color2 DCDCDC
+color3 DCDCDC
+color4 F9F9F9
+color5 D64937
+color6 888888
+color7 484848
+color8 88c833
+color9 0F8AD7
+
+TEXT
+# Various images #
+${texeci 300 curl -s "http://weather.yahooapis.com/forecastrss?w=44418&u=c" -o ~/.cache/weather.xml}
+${image ~/.conky-weather/assets/Numix/God-Mode/top-bg.png -p 20,30 -s 228x61}\
+${image ~/.conky-weather/assets/Numix/God-Mode/bottom-bg.png -p 20,633 -s 228x119}\
+${image ~/.conky-weather/assets/Numix/God-Mode/border.png -p 20,91 -s 228x86}\
+${image ~/.conky-weather/assets/Numix/God-Mode/fav-color.png -p 20,91 -s 228x86}\
+${image ~/.conky-weather/assets/Numix/God-Mode/bg-1.png -p 20,177 -s 228x650}\
+#${image ~/.conky-weather/assets/Numix/God-Mode/bg-2.png -p 20,263 -s 228x105}\
+#${image ~/.conky-weather/assets/Numix/God-Mode/bg-3.png -p 20,368 -s 228x305}\
+#${image ~/.conky-weather/assets/Numix/God-Mode/bg-4.png -p 20,340 -s 228x14}\
+#${image ~/.conky-weather/assets/Numix/God-Mode/bg-1.png -p 20,393 -s 228x196}\
+#${image ~/.conky-weather/assets/Numix/God-Mode/bg-1.png -p 20,550 -s 228x196}\
+
+${image ~/.conky-weather/assets/Numix/God-Mode/separator-v.png -p 95,185 -s 1x76}\
+${image ~/.conky-weather/assets/Numix/God-Mode/separator-v.png -p 172,185 -s 1x76}\
+${image ~/.conky-weather/assets/Numix/God-Mode/separator-h.png -p 33,269 -s 202x1}\
+\
+# The days of the forecast #
+\
+${color3}${voffset 172}${alignc 77}${texeci 300 grep "yweather:forecast" ~/.cache/weather.xml | grep -o "day=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*" | awk 'NR==1' | tr '[a-z]' '[A-Z]'}${color}
+${color3}${voffset -13}${alignc}${texeci 300 grep "yweather:forecast" ~/.cache/weather.xml | grep -o "day=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*" | awk 'NR==2' | tr '[a-z]' '[A-Z]'}${color}
+${color3}${voffset -13}${alignc -77}${texeci 300 grep "yweather:forecast" ~/.cache/weather.xml | grep -o "day=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*" | awk 'NR==3' | tr '[a-z]' '[A-Z]'}${color}
+\
+# The temperatures of the forecast #
+\
+${color2}${voffset 51}${alignc 77}${texeci 300 grep "yweather:forecast" ~/.cache/weather.xml | grep -o "low=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*" | awk 'NR==1'}°/${texeci 300 grep "yweather:forecast" ~/.cache/weather.xml | grep -o "high=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*" | awk 'NR==1'}°${color}
+${color2}${voffset -13}${alignc}${texeci 300 grep "yweather:forecast" ~/.cache/weather.xml | grep -o "low=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*" | awk 'NR==2'}°/${texeci 300 grep "yweather:forecast" ~/.cache/weather.xml | grep -o "high=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*" | awk 'NR==2'}°${color}
+${color2}${voffset -13}${alignc -77}${texeci 300 grep "yweather:forecast" ~/.cache/weather.xml | grep -o "low=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*" | awk 'NR==3'}°/${texeci 300 grep "yweather:forecast" ~/.cache/weather.xml | grep -o "high=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*" | awk 'NR==3'}°${color}
+\
+# The "conditions" section of the conky #
+\
+${goto 36}${voffset -172}${font Droid Sans :size=36}${color4}${texeci 300 grep "yweather:condition" ~/.cache/weather.xml | grep -o "temp=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*"}°${font}${color}
+${goto 46}${voffset 14}${font Droid Sans :size=12}${color4}${texeci 300 grep "yweather:condition" ~/.cache/weather.xml | grep -o "text=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*"}${font}${color}
+${color1}${alignr 52}${voffset -73}${texeci 300 grep "yweather:atmosphere" ~/.cache/weather.xml | grep -o "pressure=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*"} ${texeci 300 grep "yweather:units" ~/.cache/weather.xml | grep -o "pressure=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*"}
+${color1}${alignr 52}${voffset 7}${texeci 300 grep "yweather:atmosphere" ~/.cache/weather.xml | grep -o "humidity=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*"} %${color}
+${color1}${alignr 52}${voffset 7}${texeci 300 grep "yweather:wind" ~/.cache/weather.xml | grep -o "speed=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*"} ${texeci 300 grep "yweather:units" ~/.cache/weather.xml | grep -o "speed=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*"}${color}
+\
+# Clock + calendar #
+\
+${voffset -117}${font Droid Sans Mono :size=22}${alignc}${color2}${time %H:%M}${font}${color}
+${voffset 4}${font Droid Sans :size=10}${alignc}${color6}${time %A %d %B }${font}${color}
+\
+# Cpu, memory, swap info and load graph #
+\
+${voffset 200}${goto 40}${color5}Cpu:${color}
+${voffset 4}${goto 40}${color5}Mem:${color}
+${voffset 4}${goto 40}${color5}Swap:${color}
+${voffset -47}${alignr 39}${color6}${cpu cpu0}%${color}
+${voffset 4}${alignr 39}${color6}${memperc}%${color}
+${voffset 4}${alignr 39}${color6}${swapperc}%${color}
+${voffset -47}${alignc}${color2}${cpubar 5,36}${color}
+${voffset 4}${alignc}${color2}${membar 5,36}${color}
+${voffset 4}${alignc}${color2}${swapbar 5,36}${color}
+${voffset 12}${goto 40}${loadgraph 26,190 D64937 D64937 -l}
+\
+
+# The network section #
+\
+${image ~/.conky-weather/assets/Numix/God-Mode/separator-h.png -p 33,390 -s 202x1}\
+${if_existing /proc/net/route wlan0}
+	${voffset 0}${goto 40}${color5}Up: ${color2}${alignc}${upspeed wlan0} kb/s ${alignc}${upspeedgraph wlan0 8,60 789E2D A7CC5C}
+	${voffset 9}${goto 40}${color5}Down: ${color2}${alignc}${downspeed wlan0} kb/s ${alignc}${downspeedgraph wlan0 8,60 789E2D A7CC5C}
+	${voffset 9}${goto 40}${color5}Upload: ${color2}${alignc}${totalup wlan0}
+	${voffset 9}${goto 40}${color5}Download: ${color2}${alignc}${totaldown wlan0}
+	${voffset 9}${goto 40}${color5}Signal: ${color2}${wireless_link_qual wlan0}% ${alignc}${wireless_link_bar 8,60 wlan0}
+${else}
+${if_existing /proc/net/route eth0}
+	${voffset -260}${goto 40}${color5}Up: ${alignc 2}${color2}${upspeed eth0} kb/s ${alignr 30}${upspeedgraph eth0 8,60 789E2D A7CC5C}
+	${voffset 9}${goto 40}${color5}Down: ${alignc 2}${color2}${downspeed eth0} kb/s ${alignr 30}${downspeedgraph eth0 8,60 789E2D A7CC5C}
+	${voffset 9}${goto 40}${color5}Upload: ${color2}${alignc 12}${totalup eth0}
+	${voffset 9}${goto 40}${color5}Download: ${color2}${alignc 12}${totaldown eth0}
+${endif}
+${else}
+${if_existing /proc/net/route eth1}
+
+${endif}
+${else}
+	${font PizzaDude Bullets:size=14}4${font}   Network Unavailable
+${endif}
+
+# The processes section #
+\
+${image ~/.conky-weather/assets/Numix/God-Mode/separator-h.png -p 33,515 -s 202x1}\
+${voffset -4}${color9}${goto 40}Proc${color}
+${voffset -13}${color9}${alignc}Mem%${color}
+${voffset -13}${color9}${alignr 39}Mem${color}
+
+${voffset 4}${goto 40}${color5}${top_mem name 1}${color}
+${voffset 4}${goto 40}${color5}${top_mem name 2}${color}
+${voffset 4}${goto 40}${color5}${top_mem name 3}${color}
+${voffset 4}${goto 40}${color5}${top_mem name 4}${color}
+${voffset 4}${goto 40}${color5}${top_mem name 5}${color}
+${voffset -81}${alignc}${color2}${top_mem mem 1}%${color}
+${voffset 4}${alignc}${color2}${top_mem mem 2}%${color}
+${voffset 4}${alignc}${color2}${top_mem mem 3}%${color}
+${voffset 4}${alignc}${color2}${top_mem mem 4}%${color}
+${voffset 4}${alignc}${color2}${top_mem mem 5}%${color}
+${voffset -81}${alignr 39}${color6}${top_mem mem_res 1}${color}
+${voffset 4}${alignr 39}${color6}${top_mem mem_res 2}${color}
+${voffset 4}${alignr 39}${color6}${top_mem mem_res 3}${color}
+${voffset 4}${alignr 39}${color6}${top_mem mem_res 4}${color}
+${voffset 4}${alignr 39}${color6}${top_mem mem_res 5}${color}
+
+\
+
+# My
+\
+${image ~/.conky-weather/assets/Numix/God-Mode/separator-h.png -p 33,650 -s 202x1}\
+${voffset -10}
+${goto 40} ${color5}Home:${color2} ${alignr 40}${fs_free /home} / ${fs_size /home} ${alignr 30}${fs_bar 8,60 /home}
+${voffset 4}${goto 40} ${color5}Root:${color2} ${alignr 40}${fs_free /root} / ${fs_size /root} ${alignr 30}${fs_bar 8,60 /root}
+
+${goto 40} ${color5}Battery: ${color2} ${alignc}${battery_percent BAT1}% ${alignr 30}${if_match ${battery_percent BAT1} >50}${color8}${else}${endif}${battery_bar 8,60 BAT1}
+${font :size=8}
+${goto 40}${color5}Uptime: ${goto 8}${color2}${alignc}${uptime}
+${goto 40}${color5}Ip:${color2}${alignc}${texeci 360000 wget http://checkip.dyndns.org -O - -o /dev/null | cut -d : -f 2 | cut -d \< -f 1}
+${goto 40} ${color5}Gmail:${color2} ${voffset -6}${alignc 40} ${font :size=13}${execpi 300 ~/.scripts/conky/gmail.sh mail@gmail.com "mdp"}
+\
+
+\
+# Various images including the icons of the forecast #
+\
+${image ~/.conky-weather/assets/Numix/God-Mode/pressure.png -p 224,95 -s 16x16}\
+${image ~/.conky-weather/assets/Numix/God-Mode/humidity.png -p 224,115 -s 16x16}\
+${image ~/.conky-weather/assets/Numix/God-Mode/wind-2.png -p 224,136 -s 16x16}\
+${texeci 300 cp -f ~/.conky-weather/icons/weather-icons-light2/$(grep "yweather:forecast" ~/.cache/weather.xml | grep -o "code=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*" | awk 'NR==1').png ~/.cache/weather-1.png}${image ~/.cache/weather-1.png -p 41,207 -s 32x32}\
+${texeci 300 cp -f ~/.conky-weather/icons/weather-icons-light2/$(grep "yweather:forecast" ~/.cache/weather.xml | grep -o "code=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*" | awk 'NR==2').png ~/.cache/weather-2.png}${image ~/.cache/weather-2.png -p 119,207 -s 32x32}\
+${texeci 300 cp -f ~/.conky-weather/icons/weather-icons-light2/$(grep "yweather:forecast" ~/.cache/weather.xml | grep -o "code=\"[^\"]*\"" | grep -o "\"[^\"]*\"" | grep -o "[^\"]*" | awk 'NR==3').png ~/.cache/weather-3.png}${image ~/.cache/weather-3.png -p 195,207 -s 32x32}${font}\
+
