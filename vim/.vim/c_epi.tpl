@@ -1,9 +1,9 @@
 /*
 ** @@FNAME@@ for @@PNAME@@ in @@FPATH@@
 **
-** Made by [NAME]
-** Login   <@@AUTHORMAIL@@>
+** Made by lefloc_l
+** Login <@@AUTHORMAIL@@>
 **
-** Started on  @@CDATE@@ [NAME]
-** Last update @@MDATE@@ [NAME]
+** Started on  @@CDATE@@ lefloc_l
+** Last update @@MDATE@@ lefloc_l
 */
