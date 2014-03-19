@@ -1,0 +1,106 @@
+###############################################################################
+#                                                                             #
+#                                                                             #
+                                  notes_cpp
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+LINKS AND SUMMARY
+
+
+
+===============================================================================
+                          Load dynamic library
+===============================================================================
+- copie de surface / copie en profondeur
+
+- forme coplien permet de gerer le cycle de vie de l'objet (de le maitriser).
+
+-> la forme canonique est genere par le compilo
+
+
+Les bibliotheques
+- un ensemble de symboles exterieur au programme
+deux types : statiques ou dynamiques
+
+statique : simple collection de fichiers objets, inclusion pendant l'edition des liens, partie integrale de l'executable.
+creation : ar rcs lib.a file.o
+
+dynamique :
+pas d'inclusion pendant l'edition de liens -> executable plus leger, on peut se servir de plusieurs bibliotheques. Mais on doit recompiler la bilioteque pour chaque archi. Chargee une seule fois en memoire pour tout les progs qui l utilisent
+
+-fPIC -> obligatoire sur Linux, de base sous windows (.so = .dll)
+gcc -fPIC file.o
+
+gcc -shared -o .so files.o
+
+-Wl -RPath -> gcc pour eviter ceci :
+export LD_LIBRARY_PARH="./"
+ou parce que la lib est dans /usr/lib/
+
+
+en fr dire bibliotheque, pas librairie
+
+CFLAGS en c CXXFLAGS en cpp
+
+utilisation de la bibliotheque a l'execution. -> permet d'utiliser des plugins
+
+decoration (mangling) -> permet de differencier les symboles
+
+permet de manipuler des bib. dynamiques a l'execution
+dlopen, dlsym, dlerror, dlclose
+
+-> empeche le mangling -> dis au compilo de pas decorer la fonction pour pouvoir utiliser dlsym
+extern "C"
+{
+  void print() { }
+  // fonction qui instancie un obj et le retourne :
+  IAnimal * makeKoala( return new Koala() );
+}
+
+utiliser un reinterpret_cast sur le retour de dlsym :)
+
+IAssistant* (*external_creator)();
+
+void *dhandle;
+
+dhandle = dlopen();
+
+external_creator = reinterpret_cast(IAssistant* (*)()>(dlsym(dlhandle, "create_assistant"));
+IAssistant *bob = external_creator(); // Objet du type inclut dans la bibl.
+bob->talk();
+
+dclose(handle);
+
+
+g++ -export-dynamic : interactions prog / lib
+la lib dynamique peut acceder aux symboles
+
+
+utilis :
+nm
+ltrace -> traceur d'appel aux libs
+ldd/ldconfig -> analyse de dependances
+
+void LD_DEBUG
+
+pas d'exceptions dans le destructeur
+
+Construction
+allocation -> initialisation -> construction
+
+Destruction
+destruction -> desallocation
+Si on throw ici, on desalloue pas et peux provoquer un abort si une autre classe throw aussi
+
+
+
+
+
+
+
+
+================================================================================
+                                lefloc_l
+================================================================================

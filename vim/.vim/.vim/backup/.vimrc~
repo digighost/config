@@ -362,7 +362,7 @@ endfunction
 
 function Create_class(name)
   r ~/.vim/cpp_class.tpl
-  execute "%s,@@NAME@@," . a:name . ","
+  execute "%s,@@NAME@@," . a:name . ",g"
 endfunction
 
 au BufNewFile {*.h{,h}} call Epi_CHHeader_Insert()

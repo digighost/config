@@ -1,0 +1,186 @@
+ (add-to-list 'load-path "~/documents/ecb-2.40/")
+
+
+(require 'ecb)
+(require 'ecb-autoloads)
+
+;; Auto complettition
+(load-file "~/.emacs.d/autopair.el")
+(load-file "~/.emacs.d/fuzzy.el")
+(load-file "~/.emacs.d/popup.el")
+(load-file "~/.emacs.d/auto-complete.el")
+(load-file "~/.emacs.d/auto-complete-config.el")
+(load-file "~/.emacs.d/sr-speedbar.el")
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(ac-config-default)
+
+;; numero de ligne
+(load "~/.emacs.d/linum.el")
+(require 'linum)
+(global-linum-mode 1)
+
+;; comment if autopair.el is in standard load path
+(require 'autopair)
+(autopair-global-mode)
+
+;; complète automatiquement ce que vous tapez dans le mini-buffer
+(icomplete-mode 1)
+
+(setq compile-command "make")
+(setq compilation-window-heigh 8)
+;; colorier toutes les erreurs de compilation
+(setq compile-auto-highlight 'all)
+
+;; pour naviguer facilement entre les buffers avec C-x B
+;; affiche la liste des buffers et l'autocomplétion fait le reste
+(require 'iswitchb nil t)
+(when (fboundp 'iswitchb-default-keybindings)
+(iswitchb-default-keybindings))
+
+;; écran de veille d'emacs, complétement inutile donc indispensable...
+;;(zone)
+;;(zone-when-idle 45)
+
+;; afficher l'arborescence des fichiers dans la speedbar
+;;(global-set-key [f5] 'speedbar-fichiers)
+
+;; colorer les parenthèses
+(load-library "paren")
+(show-paren-mode 1)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; append-tuareg.el - Tuareg quick installation: Append this file to .emacs.
+
+(add-to-list 'auto-mode-alist '("\\.ml[iylp]?" . tuareg-mode))
+(autoload 'tuareg-mode "tuareg" "Major mode for editing Caml code" t)
+(autoload 'camldebug "camldebug" "Run the Caml debugger" t)
+(dolist (ext '(".cmo" ".cmx" ".cma" ".cmxa" ".cmi"))
+  (add-to-list 'completion-ignored-extensions ext))
+
+(global-font-lock-mode 1) ;; Enable syntax highlighting when editing code.
+
+(autoload 'php-mode "~/.emacs.d/php-mode" "php" t)
+(add-to-list 'auto-mode-alist (cons "\\.php$" 'php-mode))
+(add-to-list 'auto-mode-alist (cons "\\.cor$" 'hexl-mode))
+
+;; ========== Place Backup Files in Specific Directory ==========
+;; Enable backup files.
+;(setq make-backup-files t)
+;; Enable versioning with default values (keep five last versions, I think!)
+;(setq version-control t)
+;; Save all backup file in this directory.
+;(setq backup-directory-alist (quote ((".*" . "~/.emacs_backups/"))))
+
+;disable backup
+;(setq backup-inhibited t)
+;(require 'linum)
+;(global-linum-mode 1)
+
+; Reduit la fontion sur elle meme
+;; (add-hook 'c-mode-common-hook 'hs-minor-mode)
+;; (add-hook 'lisp-mode-hook 'hs-minor-mode)
+;; (add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
+;; (add-hook 'python-mode-hook 'hs-minor-mode)
+;; (global-set-key [f5] 'hs-hide-block)
+
+;; Et la 'de'reduit
+;;(global-set-key [f6] 'hs-show-block)
+
+;; afficher la liste des buffers dans la speedbar
+(global-set-key [f6] 'speedbar-buffers)
+(global-set-key [f7] 'iso-accents-mode)
+
+
+;; F7 -> GDB
+;(setq-default gdb-many-windows t)
+;;(global-set-key [f7] `gdb)
+
+;; F8 -> aller a la prochaine erreur de compilation
+(global-set-key    [f8] 'next-error)
+
+;;max 80 colonnes
+(setq-default fill-column 80)
+
+;; Fermeture automatique des parenthèses
+(load-library "paren")
+(show-paren-mode 1)
+
+;; Les skeleton
+(load-file "~/.emacs.d/skeleton.el")
+
+;; Maefile et .h vide
+(load-file "~/.emacs.d/empty.el")
+
+;; Raccourcis
+(load-file "~/.emacs.d/raccourcis.el")
+
+;;Ajout automatique des parenthèses fermantes;
+;; (add-to-list 'load-path "~/.emacs.d")
+
+;; Laisser le curseur en place lors d'un defilement par pages.
+;; Par defaut, Emacs place le curseur en debut ou fin d'ecran
+;; selon le sens du defilement.
+(setq scroll-preserve-screen-position t)
+
+;;; compte le nombre de ligne
+(global-set-key [f4] 'count-lines-region)
+
+;; Affiche le numéro de ligne et de colonne
+(column-number-mode t)
+(line-number-mode t)
+
+;; affiche l'heure
+(display-time-mode t)
+
+;; desactive le menu bar
+(menu-bar-mode -1)
+
+;; Affiche la parenthese correspondante
+(show-paren-mode)
+
+;; affiche les espaces inutile
+(setq-default show-trailing-whitespace t)
+
+;; autocomplétion
+(global-set-key [backtab] 'dabbrev-expand)
+(global-set-key [S-tab] 'dabbrev-completion)
+
+;; Suppression des espaces en fin de ligne a l'enregistrement
+ (add-hook 'c++-mode-hook '(lambda ()
+ (add-hook 'write-contents-hooks 'delete-trailing-whitespace nil t)))
+ (add-hook   'c-mode-hook '(lambda ()
+ (add-hook 'write-contents-hooks 'delete-trailing-whitespace nil t)))
+
+;; Pour éviter le temps d'attente au démarrage...
+ (modify-frame-parameters nil '((wait-for-wm . nil)) )
+;; ...et enlever le message d'accueil
+ (setq inhibit-startup-message t)
+
+;; mouse scrolling
+;;(mouse-wheel-mode t)
+
+;; Complette automatiquement ce que vous tapez dans le mini-buffer
+(icomplete-mode 1)
+
+;; yes > y | no > n
+(fset 'yes-or-no-p 'y-or-n-p)
+
+;; Skeleton des headers protege
+(define-skeleton insert-protect-header
+  "Inserts a define to protect the header file."
+  ""
+  '(setq str (file-name-sans-extension
+          (file-name-nondirectory (buffer-file-name))))
+  "#ifndef "(upcase str)"_H_\n"
+  "# define "(upcase str)"_H_\n"
+  "\n"
+  "\n"
+  "\n"
+  "#endif /* !"(upcase str)"_H_ */\n")
+(global-set-key [f2] 'insert-protect-header)
+
+;; speedbar
+(require 'sr-speedbar)
+  (global-set-key (kbd "C-x t") 'sr-speedbar-toggle)
+

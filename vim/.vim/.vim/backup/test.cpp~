@@ -1,0 +1,22 @@
+/*
+** test.cpp for loic in /home/loic
+**
+** Made by lefloc_l
+** Login <lefloc_l@epitech.eu>
+**
+** Started on  mer. mars 19 00:49:35 2014 lefloc_l
+** Last update mer. mars 19 00:52:49 2014 lefloc_l
+*/
+
+MyClass::MyClass()
+{
+}
+
+MyClass::MyClass(std::string & a)
+{
+}
+
+MyClass::~MyClass()
+{
+}
+

@@ -1,0 +1,77 @@
+/*
+** Window.cpp for gtk in /home/loic/dev/epitech/cpp/Nibbler/gtk
+**
+** Made by lefloc_l
+** Login <lefloc_l@epitech.eu>
+**
+** Started on  mar. mars 18 11:48:40 2014 lefloc_l
+** Last update mer. mars 19 00:07:52 2014 lefloc_l
+*/
+
+#include <iostream>
+#include "./Window.hh"
+
+Window::Window()
+{
+  this->run();
+}
+
+Window::~Window()
+{
+
+}
+
+void		Window::run()
+{
+  set_title("Nibler");
+  set_border_width(10);
+  set_position(Gtk::WIN_POS_CENTER);
+  set_default_size(400, 400);
+
+  /*
+   * we use mask : whitout mask an event occured each time the mouse moves.
+   * cf http://www.pygtk.org/pygtk2reference/class-gdkevent.html
+   */
+  add_events(Gdk::KEY_PRESS_MASK);
+}
+
+/*
+** keys are defines on /usr/include/gtk-3.0/gdk/gdkkeysyms.h
+** casse is enable : GDK_KEY_P != GDK_KEY_p
+*/
+bool		Window::on_key_press_event(GdkEventKey *event)
+{
+  if (event->keyval == GDK_KEY_Escape)
+  {
+    g_message("Exit the GUI");
+    hide();
+    return true;
+  }
+  else if (event->keyval == GDK_KEY_Up)
+  {
+    g_debug("UP");
+    return true;
+  }
+  else if (event->keyval == GDK_KEY_Down)
+  {
+    g_debug("DOWN");
+    return true;
+  }
+  else if (event->keyval == GDK_KEY_Left)
+  {
+    g_debug("LEFT");
+    return true;
+  }
+  else if (event->keyval == GDK_KEY_Right)
+  {
+    g_debug("RIGHT");
+    return true;
+  }
+  else if (event->keyval == GDK_KEY_p)
+  {
+    g_debug("p");
+    return true;
+  }
+  // else, we call the key_press_event of GTK.
+  return Gtk::Window::on_key_press_event(event);
+}

@@ -1,0 +1,37 @@
+
+# MacPorts Installer addition on 2013-03-15_at_14:43:55: adding an appropriate PATH variable for use with MacPorts.
+export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+# Finished adapting your PATH environment variable for use with MacPorts.
+if [ -n "$BASH_VERSION" ]; then
+  # include .bashrc if it exists
+  if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+  fi
+fi
+# set PATH so it includes user's private bin if it exists</div>
+if [ -d ~/bin ] ; then
+  PATH=~/bin:"${PATH}"
+fi
+if [ -e /usr/share/terminfo/x/xterm-256color ]; then
+        export TERM='xterm-256color'
+else
+        export TERM='xterm-color'
+fi
+##
+# Your previous /Users/loic/.profile file was backed up as /Users/loic/.profile.macports-saved_2013-03-25_at_11:36:48
+##
+
+# MacPorts Installer addition on 2013-03-25_at_11:36:48: adding an appropriate PATH variable for use with MacPorts.
+export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+# Finished adapting your PATH environment variable for use with MacPorts.
+
+
+##
+# Your previous /Users/loic/.profile file was backed up as /Users/loic/.profile.macports-saved_2013-03-25_at_12:11:47
+##
+
+# MacPorts Installer addition on 2013-03-25_at_12:11:47: adding an appropriate PATH variable for use with MacPorts.
+export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+# Finished adapting your PATH environment variable for use with MacPorts.
+
+export PATH=${PATH}:/opt/local/bin
