@@ -16,3 +16,4 @@ plugins:
   - nerdcommenter
   - neocomplcache
   - syntastic: show errors : :lnext/ :lprev for jump between errors (https://github.com/scrooloose/syntastic)
+  - vim-fswitch and vim-protodef -> create .h, go on .cpp, use \PP -> implement class define on the .cpp.   https://github.com/derekwyatt/. !!!  !!!
