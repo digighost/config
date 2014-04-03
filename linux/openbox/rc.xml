@@ -118,17 +118,13 @@
 
        use obconf if you want to change these without having to log out
        and back in -->
-    <number>3</number>
+    <number>4</number>
     <firstdesk>1</firstdesk>
     <names>
-      <!-- set names up here if you want to, like this:
-      <name>desktop 1</name>
-      <name>desktop 2</name>
-      -->
       <name>Dev</name>
+      <name>Main</name>
       <name>Social</name>
       <name>Other</name>
-      <name>4</name>
     </names>
     <popupTime>875</popupTime>
     <!-- The number of milliseconds to show the popup for when switching
@@ -330,7 +326,7 @@
     <!-- MY KEY BIND -->
     <keybind key="A-q">
       <action name="Execute">
-        <command>lxterminal</command>
+        <command>terminator</command>
       </action>
     </keybind>
     <keybind key="W-space">
@@ -536,6 +532,24 @@
         <command>cb-aerosnap --right</command>
       </action>
     </keybind>
+    
+     <!-- volume control -->
+    <keybind key="XF86AudioRaiseVolume">
+      <action name="Execute">
+    <command>amixer sset Master,0 5%+</command>
+      </action>
+    </keybind>
+    <keybind key="XF86AudioLowerVolume">
+      <action name="Execute">
+    <command>amixer sset Master,0 5%-</command>
+      </action>
+    </keybind>
+    <keybind key="XF86AudioMute">
+      <action name="Execute">
+    <command>amixer sset Master,0 toggle</command>
+      </action>
+    </keybind>
+    
   </keyboard>
   <mouse>
     <dragThreshold>8</dragThreshold>
@@ -1015,6 +1029,13 @@
 
   # end of the example
 -->
+	<application name="Pidgin" class="Pidgin" >
+      <desktop>4</desktop>
+    </application>
+    <application name="Skype" class="Skype" >
+      <desktop>4</desktop>
+    </application>
+    
     <application name="gmessage">
       <decor>no</decor>
       <shade>no</shade>
@@ -1046,6 +1067,12 @@
         <x>center</x>
         <y>center</y>
       </position>
+    </application>
+    <application name="terminator_desktop">
+      <focus>yes</focus>
+      <layer>below</layer>
+      <desktop>all</desktop>
+      <skip_taskbar>yes</skip_taskbar>
     </application>
   </applications>
 </openbox_config>

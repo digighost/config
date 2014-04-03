@@ -12,7 +12,7 @@
 		<item label="Terminal">
 			<action name="Execute">
 				<command>
-					terminator -T "loic lefloch"
+					terminator -T &quot;loic lefloch&quot;
 				</command>
 			</action>
 		</item>
@@ -37,7 +37,8 @@
 				</command>
 			</action>
 		</item>
-		<item label="Calendar">de
+		<item label="Calendar">
+			de
 			<action name="Execute">
 				<command>
 					~/documents/firefox/firefox https://www.google.com/calendar/render?tab=wc
@@ -45,8 +46,18 @@
 			</action>
 		</item>
 		<separator/>
-		<menu id='devmenu' label='Utils'>
+		<menu id="devmenu" label="Utils">
 			<menu id="root-menu-153859" label="Dev">
+				<item label="Glade (Gtk)">
+					<action name="Execute">
+						<command>glade</command>
+					</action>
+				</item>
+				<item label="Kdbg">
+					<action name="Execute">
+						<command>kdbg</command>
+					</action>
+				</item>
 				<item label="GVim">
 					<action name="Execute">
 						<command>gvim</command>
@@ -76,10 +87,14 @@
 				</action>
 			</item>
 			<item label="notes">
-				tomboy
+				<action name="Execute">
+					tomboy
+				</action>
 			</item>
 			<item label="rss - lifarea">
-				lifearea
+				<action name="Execute">
+					lifearea
+				</action>
 			</item>
 		</menu>
 		<menu id="other" label="Other">

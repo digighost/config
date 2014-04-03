@@ -83,3 +83,8 @@ sleep 10
 
 ## dropbox
 ~/.dropbox-dist/dropboxd &
+
+~/.scripts/run_desktop_terminal.sh
+
+# network manager
+wicd &

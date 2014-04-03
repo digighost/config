@@ -8,6 +8,12 @@
 # http://crunchbanglinux.org/forums/topic/3232/my-tint2-config/
 
 # Background definitions
+
+# colors
+# green : 26A65B
+# grey : 22313F
+# saumon : e14d43
+
 # ID 1
 rounded = 0
 border_width = 0
@@ -36,13 +42,13 @@ border_color = #ED2323 60
 rounded = 0
 border_width = 1
 background_color = #000000 0
-border_color = #000000 0
+border_color = #ffffff 10
 
 # ID 6 - active taskbar
 rounded = 0
 border_width = 1
 background_color = #26A65B 40
-border_color = #d8d8d8 0
+border_color = #26A65B 10
 
 # ID 7 - tooltip
 rounded = 3
@@ -59,13 +65,14 @@ border_color = #888888 20
 # Panel
 panel_monitor = all
 panel_position = bottom center horizontal
-panel_items = TSC
-panel_size = 100% 20
+# define modules L -> launcher ; T -> Taskbar; S -> ; B -> Battery; C ->  clock
+panel_items = LTSBC
+panel_size = 100% 25
 panel_margin = 200 0
 panel_padding = 0 0
 panel_dock = 0
 wm_menu = 1
-panel_layer = bottom
+panel_layer = top
 panel_background_id = 1
 
 # Panel Autohide
@@ -116,13 +123,13 @@ font_shadow = 0
 # Launcher
 launcher_padding = 8 4 4
 launcher_background_id = 1
-launcher_icon_size = 20
+launcher_icon_size = 15
 # Specify icon theme names with launcher_icon_theme. 
 # if you have an XSETTINGS manager running (like xfsettingsd), tint2 will follow your current theme.
 launcher_icon_theme = gnome-colors-statler
 # Each launcher_item_app must be a full path to a .desktop file
 launcher_item_app = /usr/share/applications/terminator.desktop
-launcher_item_app = /usr/share/applications/xfce4-file-manager.desktop
+launcher_item_app = /usr/share/applications/Thunar.desktop
 launcher_item_app = /usr/share/applications/gedit.desktop
 
 # System Tray
@@ -169,5 +176,20 @@ bat2_font = Liberation Mono 8
 battery_font_color = #b5b5b5 100
 battery_padding = 2 0
 battery_background_id = 0
+
+#---------------------------------------------
+# SYSTRAYBAR
+#---------------------------------------------
+systray_padding = 2 3 3
+systray_background_id = 1
+
+
+#---------------------------------------------
+# MOUSE ACTION ON TASK
+#---------------------------------------------
+mouse_middle = none
+mouse_right = close
+mouse_scroll_up = toggle
+mouse_scroll_down = iconify
 
 # End of config

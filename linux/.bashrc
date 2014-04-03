@@ -43,9 +43,16 @@ export pager='less -e'
 # COLORS
 # ========================================================== #
 GREEN="\[\033[0;32m\]"
-BLUE="\[\033[36m\]"
-RED="\[\033[1;31m\]"
-NO_COLOUR="\[\033[0m\]"
+BLUE2="\[\033[36m\]"
+LIGHT_RED="\[\033[1;31m\]"
+RED="\[\033[0;31m\]"
+YELLOW="\[\033[0;33m\]"
+GREEN="\[\033[0;32m\]"
+BLUE="\[\033[0;34m\]"
+LIGHT_GREEN="\[\033[1;32m\]"
+WHITE="\[\033[1;37m\]"
+LIGHT_GRAY="\[\033[0;37m\]"
+NO_COLOR="\[\033[0m\]"
 
 # ========================================================== #
 # History
@@ -79,7 +86,14 @@ export LESS_TERMCAP_us=$'\E[01;32m'
 
 function set_prompt
 {
-	PS1="\r\n$RED[\u] $GREEN[\$(date +%H:%M)] $BLUE[\w] $NO_COLOUR>"
+  previous_return_value=$?;
+
+  if test $previous_return_value -eq 0
+  then
+    PS1="\r\n$LIGHT_RED[\u] $GREEN[\$(date +%H:%M)] $BLUE[\w] $NO_COLOR>" #     PS1="\r\n$RED[\u] $GREEN[\$(date +%H:%M)] $BLUE[\w]$(parse_git_branch)$NO_COLOR>"
+  else
+    PS1="\r\n$LIGHT_RED[\u] $GREEN[\$(date +%H:%M)] $BLUE[\w] $RED>$NO_COLOR"
+  fi
 }
 set_prompt;
 
@@ -123,6 +137,12 @@ alias roulette='[ $[ $RANDOM % 6 ] == 0 ] && echo Die || echo Live'				# command
 alias screensaver='for ((;;)); do echo -ne "\033[$((1+RANDOM%LINES));$((1+RANDOM%COLUMNS))H\033[$((RANDOM%2));3$((RANDOM%8))m$((RANDOM%10))"; sleep 0.1 ; done'												# terminal screensaver
 alias starwars='telnet towel.blinkenlights.nl'							# the famous starwars ASCII version from telnet
 
+# Use vim as man reader
+
+export PAGER="/bin/sh -c \"unset PAGER;col -b -x | vim -R -c 'set ft=man nomod nolist' -c 'map q :q<CR>' \
+-c 'map <SPACE> <C-D>' -c 'map b <C-U>' \
+                     -c 'nmap K :Man <C-R>=expand(\\\"<cword>\\\")<CR><CR>' -\""
+
 
 # ========================== #
 # basic commands rewrite
@@ -147,6 +167,10 @@ alias cclean='rm -f *# *~ *.core .*# .*~ .*.core'
 alias remove='/bin/rm'
 alias reload='source ~/.bashrc'
 alias logs="find /var/log -type f -exec file {} \; | grep 'text' | cut -d' ' -f1 | sed -e's/:$//g' | grep -v '[0-9]$' | xargs tail -f"
+
+alias ocaml="rlwrap ocaml"
+
+alias todo='~/.scripts/todoprog/todo.sh'
 
 function rm() {
 	mv "$@" "/${HOME}/.local/share/Trash/files/"
@@ -189,7 +213,51 @@ fi
 # ========================== #
 # Git
 # ========================== #
+
+function cpush()
+{
+  git add --all ; git commit -m $1;
+  read -s -n1 -p "Do you realy want push modifications ? [y]|n ";
+  if [ "$REPLY" = y -o "$REPLY" = Y -o "$REPLY" = " " -o "$REPLY" = "" ]; then
+    git push origin master;
+  fi
+}
+
 alias lg='git log --graph --full-history --all --color --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"'
+
+# For prompt #
+function parse_git_branch {
+  git rev-parse --git-dir &> /dev/null
+  git_status="$(git status 2> /dev/null)"
+  branch_pattern="^# On branch ([^${IFS}]*)"
+  remote_pattern="# Your branch is (.*) of"
+  diverge_pattern="# Your branch and (.*) have diverged"
+
+  if [[ ! ${git_status}} =~ "working directory clean" ]]; then
+    state="${RED}⚡"
+  fi
+  # add an else if or two here if you want to get more specific
+  if [[ ${git_status} =~ ${remote_pattern} ]]; then
+    if [[ ${BASH_REMATCH[1]} == "ahead" ]]; then
+      remote="${YELLOW}↑"
+    else
+      remote="${YELLOW}↓"
+    fi
+  fi
+  if [[ ${git_status} =~ ${diverge_pattern} ]]; then
+    remote="${YELLOW}↕"
+  fi
+  if [[ ${git_status} =~ ${branch_pattern} ]]; then
+    branch=${BASH_REMATCH[1]}
+    echo " (${branch})${remote}${state}"
+  fi
+}
+
+function git_dirty_flag {
+  git status 2> /dev/null | grep -c : | awk '{if ($1 > 0) print "⚡"}'
+}
+# end prompt #
+
 
 # ========================== #
 # Directories
@@ -250,7 +318,7 @@ alias :q='read -s -n1 -p "Do you realy want to quit the shell? [y]|n "; if [ "$R
 # Google search
 function google()
 {
-	firefox "http://www.google.com/search?&num=100&q=${@}" &
+  ~/documents/firefox/firefox "http://www.google.com/search?&num=100&q=${@}" &
 }
 
 # ========================================================== #
@@ -260,10 +328,11 @@ function google()
 echo -e ""
 date
 echo -ne "Uptime:";uptime | awk /'up/'
-echo "";
 iamcow
+echo "";
 echo "==============================================";
-
+todo ls
+echo "==============================================";
 
 # ========================================================== #
 #  OTHERS
@@ -274,28 +343,25 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
 fi
 
 # Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-# find
 
 # note function
 function note()
 {
-        # if file doesn't exist, create it
-        [ -f $HOME/.notes ] || touch $HOME/.notes
-        # no arguments, print file
-        if [ $# = 0 ]
-        then
-                cat $HOME/.notes
-        # clear file
-        elif [ $1 = -c ]
-        then
-                > $HOME/.notes
-        # add all arguments to file
-        else
-                echo "$@" >> $HOME/.notes
-        fi
+  # if file doesn't exist, create it
+  [ -f $HOME/.notes ] || touch $HOME/.notes
+  # no arguments, print file
+  if [ $# = 0 ]
+  then
+   cat $HOME/.notes
+  # clear file
+  elif [ $1 = -c ]
+  then
+   > $HOME/.notes
+  # add all arguments to file
+  else
+    echo "$@" >> $HOME/.notes
+  fi
 }
 
 #
@@ -357,14 +423,14 @@ unpause() {
 # get current host related info
 function ii()
 {
-    echo -e "\nYou are logged on ${RED}$HOST"
+    echo -e "\nYou are logged on $HOST"
     echo -e "\nAdditionnal information:$NC " ; uname -a
-    echo -e "\n${RED}Users logged on:$NC " ; w -h
-    echo -e "\n${RED}Current date :$NC " ; date
-    echo -e "\n${RED}Machine stats :$NC " ; uptime
-    echo -e "\n${RED}Memory stats :$NC " ; free
-    echo -e "\n${RED}Local IP Address :$NC" ; echo ${MY_IP:."Not connected"}
-    echo -e "\n${RED}ISP Address :$NC" ; echo ${MY_ISP:."Not connected"}
+    echo -e "\nUsers logged on:$NC " ; w -h
+    echo -e "\nCurrent date :$NC " ; date
+    echo -e "\nMachine stats :$NC " ; uptime
+    echo -e "\nMemory stats :$NC " ; free
+    echo -e "\nLocal IP Address :$NC" ; echo ${MY_IP:."Not connected"}
+    echo -e "\nISP Address :$NC" ; echo ${MY_ISP:."Not connected"}
     echo
 }
 
@@ -405,7 +471,7 @@ function wscan()
 # ========================== #
 function bak()
 {
-    cp $1 $1_`date +%H:%M:%S_%d-%m-%Y`
+  cp $1 $1_`date +%H:%M:%S_%d-%m-%Y`
 }
 
 # ========================== #
@@ -467,8 +533,29 @@ function bashtips() {
 # ========================== #
 function countdown()
 {
-	case "$1" in -s) shift;; *) set $(($1 * 60));; esac; local S=" "; for i in $(seq "$1" -1 1); do echo -ne "$S\r $i\r"; sleep 1; done; echo -e "$S\rBOOM!";
+  local OLD_IFS="${IFS}"
+  IFS=":"
+  local ARR=( $1 )
+  local SECONDS=$(((ARR[0] * 60) + (ARR[1] * 60) + ARR[2]))
+  local START=$(date +%s)
+  local END=$((START + SECONDS))
+  local CUR=$START
+
+  while [[ $CUR -lt $END ]]
+  do
+    CUR=$(date +%s)
+    LEFT=$((END-CUR))
+
+    printf "\r%02d:%02d:%02d" \
+    $((LEFT/3600)) $(( (LEFT/60)%60)) $((LEFT%60))
+
+    sleep 1
+  done
+  IFS="${OLD_IFS}"
+  echo "        "
+  alert "Countdown finished !!"
 }
+
 
 # ========================== #
 # crypto

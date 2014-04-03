@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=ozone3
+Type=X-GNOME-Metatheme
+Comment=Default theme for Lubuntu 12.04 Precise Pangolin
+
+[X-GNOME-Metatheme]
+GtkTheme=ozone3
+IconTheme=lubuntu
+CursorTheme=DMZ-Black
+CursorSize=0
+NotificationTheme=ubuntu
