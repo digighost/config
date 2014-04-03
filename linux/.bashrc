@@ -49,6 +49,7 @@ RED="\[\033[0;31m\]"
 YELLOW="\[\033[0;33m\]"
 GREEN="\[\033[0;32m\]"
 BLUE="\[\033[0;34m\]"
+LIGHT_BLUE="\[\033[1;34m\]"
 LIGHT_GREEN="\[\033[1;32m\]"
 WHITE="\[\033[1;37m\]"
 LIGHT_GRAY="\[\033[0;37m\]"
@@ -90,9 +91,9 @@ function set_prompt
 
   if test $previous_return_value -eq 0
   then
-    PS1="\r\n$LIGHT_RED[\u] $GREEN[\$(date +%H:%M)] $BLUE[\w] $NO_COLOR>" #     PS1="\r\n$RED[\u] $GREEN[\$(date +%H:%M)] $BLUE[\w]$(parse_git_branch)$NO_COLOR>"
+    PS1="\r\n$LIGHT_BLUE┌ $LIGHT_RED[\u] $GREEN[\$(date +%H:%M)] $BLUE[\w]\n$LIGHT_BLUE└─>$NO_COLOR"
   else
-    PS1="\r\n$LIGHT_RED[\u] $GREEN[\$(date +%H:%M)] $BLUE[\w] $RED>$NO_COLOR"
+    PS1="\r\n┌ $LIGHT_RED[\u] $GREEN[\$(date +%H:%M)] $BLUE[\w] $RED\n└─>$NO_COLOR"
   fi
 }
 set_prompt;
@@ -216,7 +217,7 @@ fi
 
 function cpush()
 {
-  git add --all ; git commit -m $1;
+  git add --all ; git commit -am $1;
   read -s -n1 -p "Do you realy want push modifications ? [y]|n ";
   if [ "$REPLY" = y -o "$REPLY" = Y -o "$REPLY" = " " -o "$REPLY" = "" ]; then
     git push origin master;
