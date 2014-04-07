@@ -1,14 +1,18 @@
 set nocompatible " must be first line
 
-"disable arrow keys
-"map <up> <nop>
-"map <down> <nop>
-"map <left> <nop>
-"map <right> <nop>
-"imap <up> <nop>
-"imap <down> <nop>
-"imap <left> <nop>
-"imap <right> <nop>
+" Identify platform {
+silent function! OSX()
+  return has('macunix')
+endfunction
+
+silent function! LINUX()
+   return has('unix') && !has('macunix') && !has('win32unix')
+endfunction
+
+silent function! WINDOWS()
+   return (has('win16') || has('win32') || has('win64'))
+endfunction
+" }
 
 " in all modes (:map and :noremap), one that works in normal mode (:nmap and :nnoremap), one in visual mode (:vmap and :vnoremap)
 
@@ -37,6 +41,7 @@ nmap	<leader>nt	:NERDTreeFind<CR>
 
 map	<A-Left>	:tabprev<CR>
 map	<A-Right>	:tabnext<CR>
+map	<F1>		:Error<CR>
 
 map	<leader>ba	:1,1000 bd!<cr> " Close all the buffers"
 map	<C-q>		:bd
@@ -84,7 +89,7 @@ set shell=bash " define the shell
 set shellcmdflag=-ic " load .bashrc
 
 set t_Co=256
-set background=light
+
 
 """"""
 "set showmode " Display the current mode
@@ -101,7 +106,7 @@ endif
 let g:airline_theme = 'powerlineish'
 
 " let g:airline_powerline_fonts=1
-" set guifont="Pragmata Pro"
+
 "set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
 " Use the default set of separators with a few customizations
 let g:airline#extensions#tabline#enabled = 1 "Automatically displays all buffers when there's only one tab open.
@@ -170,13 +175,63 @@ set wildmode=list:longest,full " Command <Tab> completion, list matches, then lo
 syntax on
 syntax sync fromstart
 
+" TODO
+"colorscheme  solarized " mustang "mustang " ir_black "grb256 " github molokai
+
+let g:bg_i = 0
+
+function! ChangeTheme()
+  colorscheme molokai
+  if g:bg_i == 0
+    colorscheme desertEx
+  elseif g:bg_i == 1
+    colorscheme molokai
+  elseif g:bg_i == 2
+    set background=dark
+    colorscheme solarized
+    call togglebg#map("<F5>")
+  elseif g:bg_i == 3
+    set background=light
+    colorscheme solarized
+    hi Cursor          ctermfg=190 ctermbg=253
+    call togglebg#map("<F5>")
+  elseif g:bg_i == 4
+    colorscheme mustang
+  elseif g:bg_i == 5
+    colorscheme jellybeans
+    let g:bg_i = -1
+  endif
+  let g:bg_i = g:bg_i + 1
+endfunction
+
+map <F2> :call ChangeTheme()<CR>
+
+if has('gui_running')
+  colorscheme solarized
+  set background=light
+  call togglebg#map("<F5>")
+else
+  colorscheme molokai
+
+  colorscheme desertEx
+  set background=light
+endif
+
 let g:molokai_original = 1
-colorscheme molokai
+
+let g:solarized_termcolors=256
+"let g:solarized_termtrans=1
+"let g:solarized_contrast="normal"
+"let g:solarized_visibility="normal"
+let g:solarized_bold = 1
+let g:solarized_underline = 1
+let g:solarized_italic = 1
 
 " override some highlight settings (turn off stupid italics in Molokai)
-highlight ColorColumn ctermbg=235 guibg=#2c2d27
-highlight CursorLine ctermbg=235 guibg=#2c2d27
-highlight CursorColumn ctermbg=235 guibg=#2c2d27
+
+"highlight ColorColumn ctermbg=235 guibg=#2c2d27
+ "highlight CursorLine ctermbg=235 guibg=#2c2d27
+
 highlight DiffText gui=none
 highlight Macro gui=none
 highlight SpecialKey gui=none
@@ -236,9 +291,6 @@ let g:nerdtree_tabs_open_on_gui_startup = 0
 let g:nerdtree_tabs_focus_on_files = 1
 
 """""" End NerdTree
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlP'
-
 " ================================================== Aucocomplete
 
  " Ctags {
@@ -449,4 +501,67 @@ if has("autocmd")
     autocmd Syntax * call matchadd('Debug', '\W\zs\(NOTE\|INFO\|IDEA\)')
   endif
 endif
+
+""""" ======================= SNIPPETS
+" use c-k
+
+" Use honza's snippets.
+let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
+
+" Enable neosnippet snipmate compatibility mode
+let g:neosnippet#enable_snipmate_compatibility = 1
+
+" For snippet_complete marker.
+if !exists("g:spf13_no_conceal")
+  if has('conceal')
+    set conceallevel=2  concealcursor=i
+  endif
+endif
+
+" Enable neosnippets when using go
+let g:go_snippet_engine = "neosnippet"
+
+" Disable the neosnippet preview candidate window
+" When enabled, there can be too much visual noise
+" especially when splits are used.
+set completeopt-=preview
+
+" Plugin key-mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+  smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+  xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+  " SuperTab like snippets behavior.
+"  imap <expr><TAB> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" \: pumvisible() ? "\<C-n>" : "\<TAB>"
+"  smap <expr><TAB> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)": "\<TAB>"
+
+  " For snippet_complete marker.
+  if has('conceal')
+    set conceallevel=2 concealcursor=i
+    endif
+
+if has('gui_running')
+  set guioptions-=T " Remove the toolbar
+  set lines=40 " 40 lines of text instead of 24
+  if !exists("g:spf13_no_big_font")
+    if LINUX() && has("gui_running")
+      set guifont=Andale\ Mono\ Regular\ 10,Menlo\ Regular\ 10,Consolas\ Regular\ 12,Courier\ New\ Regular\ 12
+    elseif OSX() && has("gui_running")
+      set guifont=Andale\ Mono\ Regular:h16,Menlo\ Regular:h15,Consolas\ Regular:h16,Courier\ New\ Regular:h18
+    elseif WINDOWS() && has("gui_running")
+      set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h10,Courier_New:h10
+    endif
+  endif
+endif
+
+ " ctrlp {
+let g:ctrlp_working_path_mode = 'ra'
+nnoremap <silent> <D-t> :CtrlP<CR>
+nnoremap <silent> <D-r> :CtrlPMRU<CR>
+let g:ctrlp_custom_ignore = {
+  \ 'dir': '\.git$\|\.hg$\|\.svn$',
+  \ 'file':  '\.exe$\|\.so$\|\.dll$\|\.pyc$' }
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+
 

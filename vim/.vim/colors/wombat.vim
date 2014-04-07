@@ -1,20 +1,22 @@
 " Maintainer:	Lars H. Nielsen (dengmao@gmail.com)
 " Last Change:	January 22 2007
 
+hi clear
+
 set background=dark
 
-hi clear
+
 
 if exists("syntax_on")
   syntax reset
 endif
 
-let colors_name = "wombat"
+let g:colors_name = "wombat"
 
 
 " Vim >= 7.0 specific colors
 if version >= 700
-  hi CursorLine guibg=#2d2d2d
+  "hi CursorLine guibg=#2d2d2d
   hi CursorColumn guibg=#2d2d2d
   hi MatchParen guifg=#f6f3e8 guibg=#857b6f gui=bold
   hi Pmenu 		guifg=#f6f3e8 guibg=#444444
@@ -48,4 +50,10 @@ hi PreProc 		guifg=#e5786d gui=none
 hi Number		guifg=#e5786d gui=none
 hi Special		guifg=#e7f6da gui=none
 
+   hi Normal          guifg=#F8F8F2 guibg=#272822
+   hi Comment         guifg=#75715E
+   hi CursorLine                    guibg=#3E3D32
+   hi CursorColumn                  guibg=#3E3D32
+   hi LineNr          guifg=#BCBCBC guibg=#3B3A32
+   hi NonText         guifg=#BCBCBC guibg=#3B3A32
 
