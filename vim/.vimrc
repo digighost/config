@@ -1,4 +1,9 @@
-set nocompatible " must be first line
+set nocompatible " must be first
+
+" color cursor on insert/normal mode
+
+let &t_SI = "\033]12;white\007"
+let &t_EI = "\033]12;green\007"
 
 " Identify platform {
 silent function! OSX()
@@ -14,34 +19,88 @@ silent function! WINDOWS()
 endfunction
 " }
 
-" in all modes (:map and :noremap), one that works in normal mode (:nmap and :nnoremap), one in visual mode (:vmap and :vnoremap)
+  if has('clipboard')
+    if has('unnamedplus') " When possible use + register for copy-paste
+      set clipboard=unnamedplus
+    else " On mac and Windows, use * register for copy-paste
+      set clipboard=unnamed
+    endif
+  endif
 
-" pathogen. the next two lines verify if ~/.vim/bundle/ works correctly
-runtime! autoload/pathogen.vim
-silent! call pathogen\#helptags()
-silent! call pathogen#infect()
+  " Always switch to the current file directory
+  if bufname("") !~ "^\[A-Za-z0-9\]*://" | lcd %:p:h |
+  endif
 
-let mapleader = "\\"
+  if has('cmdline_info')
+    set ruler " Show the ruler
+    set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%)
+    set showcmd " Show partial commands in status line  and Selected characters/lines in visual mode
+  endif
 
-" For mans
-let $PAGER='' " to use vim as man viewver cf .bashrc
-runtime! ftplugin/man.vim " enable man viewver on vim
+  " Change Working Directory to that of the current file
+  cmap cwd lcd %:p:h
+  cmap cd. lcd %:p:h
+
+  " Visual shifting (does not exit Visual mode)
+  vnoremap < <gv
+  vnoremap > >gv
+
+  " For when forgot to sudo
+  cmap w!! w !sudo tee % >/dev/null
+
+  " On edit mode
+  cnoremap %% <C-R>=expand('%:h').'/'<cr>
+  map <leader>ew :e %%
+  map <leader>es :sp %%
+  map <leader>ev :vsp %%
+  map <leader>et :tabe %%
+
+
+  " Adjust viewports to the same size
+  map <Leader>= <C-w>=
+
+  " Easier formatting
+  nnoremap <silent> <leader>Q gwip
+
+  " in all modes (:map and :noremap), one that works in normal mode (:nmap and :nnoremap), one in visual mode (:vmap and :vnoremap)
+
+  " pathogen. the next two lines verify if ~/.vim/bundle/ works correctly
+  runtime! autoload/pathogen.vim
+  silent! call pathogen\#helptags()
+  silent! call pathogen#infect()
+
+  let mapleader = "\\"
+
+  " For mans
+  let $PAGER='' " to use vim as man viewver cf .bashrc
+  runtime! ftplugin/man.vim " enable man viewver on vim
 
 " middle-click paste
 map! <S-Insert> <MiddleMouse>
+" rewrite Q -> indent paragrpah with 80cols limit.
+nnoremap Q gqip
+
+"au VimEnter * RainbowParenthesesToggle
+"au Syntax * RainbowParenthesesLoadRound
+"au Syntax * RainbowParenthesesLoadSquare
+"au Syntax * RainbowParenthesesLoadBraces
+"let g:rbpt_loadcmd_toggle = 0
+
 
 " buffers
 map	<C-d>		:BuffergatorToggle<CR>
-map	<C-a>		:UndotreeToggle<cr>
-map	<F4>		:TagbarToggle<CR>
-map	<C-e>		:NERDTreeToggle<CR>:NERDTreeMirror<CR>
+map	<F4>		:UndotreeToggle<cr>
+map	<C-]>		:TagbarToggle<CR>
+"map	<C-[>		:RainbowParenthesesToggle<CR>
+map	<C-e>		<plug>NERDTreeTabsToggle<CR>
 map	<C-s>		<Esc>:w<CR>a
 map	<leader>e	:NERDTreeFind<CR>
 nmap	<leader>nt	:NERDTreeFind<CR>
 
 map	<A-Left>	:tabprev<CR>
 map	<A-Right>	:tabnext<CR>
-map	<F1>		:Error<CR>
+nmap	<F1>		:Error<CR>
+imap	<F1>	        <Esc>
 
 map	<leader>ba	:1,1000 bd!<cr> " Close all the buffers"
 map	<C-q>		:bd
@@ -74,7 +133,7 @@ noremap <Leader>gl	:!git lg<CR> ":Glog<CR>
 noremap <Leader>gd	:Gdiff<CR>
 noremap <Leader>gb	:Gblame<CR>
 
-noremap <Leader>q	:bd<CR>
+noremap <Leader>q	:bd<CR> " delete buffer
 
 noremap <Leader>/	:noh<CR> " reinit search
 
@@ -158,7 +217,7 @@ set smartcase " Case sensitive when uc present
 set whichwrap=b,s,h,l,<,>,[,] " Backspace and cursor keys wrap too
 set scrolljump=5 " Lines to scroll when cursor leaves screen
 set scrolloff=3 " Minimum lines to keep above and below cursor
-set foldmethod=syntax
+set foldmethod=indent
 set foldenable " Auto fold code
 set foldnestmax=1
 set nofoldenable
@@ -175,11 +234,14 @@ set wildmode=list:longest,full " Command <Tab> completion, list matches, then lo
 syntax on
 syntax sync fromstart
 
-" TODO
-"colorscheme  solarized " mustang "mustang " ir_black "grb256 " github molokai
+function! Solarized_light()
+   set background=light
+    colorscheme solarized
+    hi Cursor ctermfg=2 ctermbg=2
+    call togglebg#map("<F5>")
+endfunction
 
 let g:bg_i = 0
-
 function! ChangeTheme()
   colorscheme molokai
   if g:bg_i == 0
@@ -191,10 +253,7 @@ function! ChangeTheme()
     colorscheme solarized
     call togglebg#map("<F5>")
   elseif g:bg_i == 3
-    set background=light
-    colorscheme solarized
-    hi Cursor          ctermfg=190 ctermbg=253
-    call togglebg#map("<F5>")
+      call Solarized_light()
   elseif g:bg_i == 4
     colorscheme mustang
   elseif g:bg_i == 5
@@ -205,6 +264,8 @@ function! ChangeTheme()
 endfunction
 
 map <F2> :call ChangeTheme()<CR>
+
+au BufNewFile,BufRead {*.cours} call Solarized_light()
 
 if has('gui_running')
   colorscheme solarized
@@ -276,7 +337,8 @@ set backup
 highlight ExtraWhitespaces ctermbg=RED guibg=#A00000
 highlight ExtraCaractere ctermbg=124 guibg=#A00000
 
-"""""" NerdTree
+"         NerdTree
+" =================== {
 let NERDTreeShowBookmarks=1
 let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr']
 let NERDTreeChDirMode=0
@@ -290,63 +352,83 @@ let g:nerdtree_tabs_open_on_gui_startup = 0
 " Focus in the main content window
 let g:nerdtree_tabs_focus_on_files = 1
 
-"""""" End NerdTree
-" ================================================== Aucocomplete
+" ==================== }
 
- " Ctags {
+
+" Tabularize
+" ==================== {"{{{
+  nmap <Leader>a& :Tabularize /&<CR>
+  vmap <Leader>a& :Tabularize /&<CR>
+  nmap <Leader>a= :Tabularize /=<CR>
+  vmap <Leader>a= :Tabularize /=<CR>
+  nmap <Leader>a: :Tabularize /: <CR>
+  vmap <Leader>a: :Tabularize  /: <CR>
+  nmap <Leader>a:: :Tabularize /:\zs<CR>
+  vmap <Leader>a::  :Tabularize  /:\zs<CR>
+  nmap  <Leader>a,  :Tabularize  /,<CR>
+  vmap  <Leader>a,  :Tabularize  /,<CR>
+  nmap  <Leader>a,,  :Tabularize  /,\zs<CR>
+  vmap  <Leader>a,,  :Tabularize  /,\zs<CR>
+  nmap  <Leader>a<Bar>  :Tabularize  /<Bar><CR>
+  vmap  <Leader>a<Bar>  :Tabularize  /<Bar><CR>
+  " ================= }"}}}
+
+ " Session List
+ " ================ {{{
+  set sessionoptions=blank,buffers,curdir,folds,tabpages,winsize
+  nmap <leader>sl :SessionList<CR>
+  nmap <leader>ss :SessionSave<CR>
+  nmap <leader>sc :SessionClose<CR>
+  " ================ }}}
+
+"     COMPLETION
+" =================== {
+
+ " ========= CTAGS
+
   set tags+=./tags/,~/.vimtags
-
-  " Make tags placed in .git/tags file available in all levels of a repository
- " let gitroot = substitute(system('git rev-parse --show-toplevel'), '[\n\r]', '', 'g')
-  "if gitroot != ''
- "   let &tags = &tags . ',' . gitroot . '/.git/tags'
- " endif
 
   set nocp
   set tags+=~/.vim/tags/cpp
   "set tags+=~/.vim/tags/gl
   "set tags+=~/.vim/tags/sdl
   "set tags+=~/.vim/tags/qt4
-" }
 
-" OmniCppComplete
-let OmniCpp_NamespaceSearch = 1
-let OmniCpp_GlobalScopeSearch = 1
-let OmniCpp_ShowAccess = 1
-let OmniCpp_ShowPrototypeInAbbr = 1 " show function parameters
-let OmniCpp_MayCompleteDot = 1 " autocomplete after .
-let OmniCpp_MayCompleteArrow = 1 " autocomplete after ->
-let OmniCpp_MayCompleteScope = 1 " autocomplete after ::
-let OmniCpp_DefaultNamespaces = ["std", "_GLIBCXX_STD"]
+  " Make tags placed in .git/tags file available in all levels of a  repository
+  let gitroot = substitute(system('git rev-parse --show-toplevel'), '[\n\r]', '', 'g')
+  if gitroot != ''
+    let &tags = &tags . ',' . gitroot . '/.git/tags'
+  endif
 
-" automatically open and close the popup menu / preview window
-au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
-set completeopt=menuone,menu,longest,preview
-"au BufNewFile,BufRead,BufEnter *.cpp,*.hpp set omnifunc=omni#cpp#complete#Main
+  " ======== OmniCppComplete
 
-" Disable AutoComplPop.
-let g:acp_enableAtStartup = 0
-" Use neocomplcache.
-let g:neocomplcache_enable_at_startup = 1
-" Use smartcase.
-let g:neocomplcache_enable_smart_case = 1
-" Set minimum syntax keyword length.
-let g:neocomplcache_min_syntax_length = 2
-"let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
 
-" Define dictionary.
-let g:neocomplcache_dictionary_filetype_lists = {
-  \ 'default' : '',
-  \ 'vimshell' : $HOME.'/.vimshell_hist',
-  \ 'scheme' : $HOME.'/.gosh_completions'
-  \ }
+  " Disable AutoComplPop.
+  let g:acp_enableAtStartup = 0
+  " Use neocomplcache.
+  let g:neocomplcache_enable_at_startup = 1
+  " Use smartcase.
+  let g:neocomplcache_enable_smart_case = 1
+  " Set minimum syntax keyword length.
+  let g:neocomplcache_min_syntax_length = 3
+  let g:neocomplcache_enable_underbar_completion = 1
+  let g:neocomplcache_enable_auto_delimiter = 1
+  let g:neocomplcache_max_list = 15
+  let g:neocomplcache_force_overwrite_completefunc = 1
+  let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
+
+  " Define dictionary.
+  let g:neocomplcache_dictionary_filetype_lists = {
+    \ 'default' : '',
+    \ 'vimshell' : $HOME.'/.vimshell_hist',
+    \ 'scheme' : $HOME.'/.gosh_completions'
+    \ }
 
   " Define keyword.
   if !exists('g:neocomplcache_keyword_patterns')
     let g:neocomplcache_keyword_patterns = {}
   endif
-
-  let g:neocomplcache_keyword_patterns['default'] = '\h\w*'
+  let g:neocomplcache_keyword_patterns._ = '\h\w*'
 
   " Plugin key-mappings.
   inoremap <expr><C-g>     neocomplcache#undo_completion()
@@ -354,119 +436,122 @@ let g:neocomplcache_dictionary_filetype_lists = {
 
   " Recommended key-mappings.
   " <CR>: close popup and save indent.
-"  inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-
+  inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
   function! s:my_cr_function()
-    return neocomplcache#smart_close_popup() . "\<CR>"
+   return neocomplcache#smart_close_popup() . "\<CR>"
     " For no inserting <CR> key.
-    "return pumvisible() ? neocomplcache#close_popup() : "\<CR>"
+    " return pumvisible() ? neocomplcache#close_popup() : "\<CR>"
   endfunction
 
-   " <TAB>: completion.
+  " <TAB>: completion.
   inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
   " <C-h>, <BS>: close popup and delete backword char.
   inoremap <expr><C-h> neocomplcache#smart_close_popup()."\<C-h>"
   inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
   inoremap <expr><C-y>  neocomplcache#close_popup()
   inoremap <expr><C-e>  neocomplcache#cancel_popup()
-  "let g:neocomplcache_enable_cursor_hold_i = 1
+  " Close popup by <Space>.
+"  inoremap <expr><Space> pumvisible() ? neocomplcache#close_popup() :"\<Space>"
 
-  " Enable omni completion.
-"  autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
- " autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-"  autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-"  autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
-  "autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+  autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+  autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+  autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+  autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+  autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 
+
+  let g:neocomplete#enable_insert_char_pre = 1
   " Enable heavy omni completion.
   if !exists('g:neocomplcache_omni_patterns')
-   " let g:neocomplcache_omni_patterns = {}
+    let g:neocomplcache_omni_patterns = {}
   endif
-  "let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-  "let g:neocomplcache_omni_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
-  "let g:neocomplcache_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+  let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+  let g:neocomplcache_omni_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+  let g:neocomplcache_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
 
-  " build tags of your own project with CTRL+F12
+  " build tags of your own project with CETRL+F12
   "map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
    noremap <F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<cr>
    inoremap <F12> <Esc>:!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<cr>
 
+" =================== }
 
 
+"         HEADERS
+" =================== {
 
+  au BufNewFile {*.cours} call Create_cours_Insert()
+  au BufNewFile {*.h{,h}} call Epi_CHHeader_Insert()
+  au BufNewFile {*.{c{,c,++,pp},h{,h,pp}},Makefile} call Epi_CHeader_Insert()
+  au BufWritePre {*.{c{,c,++,pp},h{,h,pp}},Makefile} call UpdateHeaderDate()
 
-function! UpdateHeaderDate()
-  let save_cursor  = getpos(".")
-  let la = "## Last update  @@MDATE@@ lefloc_l"
-  let la = substitute(la, "@@MDATE@@", strftime("%a %b %d %H:%M:%S %Y"), "ge")
-  let la = substitute(la, "@@MAUTHOR@@", "lefloc_l", "ge")
-  execute "silent %s,^## Last update.*," . la . ",ge"
-  let lu = "** Last update @@MDATE@@ @@MAUTHOR@@"
-  let lu = substitute(lu, "@@MDATE@@", strftime("%a %b %d %H:%M:%S %Y"), "ge")
-  let lu = substitute(lu, "@@MAUTHOR@@", "lefloc_l", "ge")
-  execute "silent %s,^\*\* Last update.*," . lu . ",ge"
-  call setpos('.', save_cursor)
-endfunction
+  function! UpdateHeaderDate()
+    let save_cursor  = getpos(".")
+    let la = "## Last update  @@MDATE@@ lefloc_l"
+    let la = substitute(la, "@@MDATE@@", strftime("%a %b %d %H:%M:%S %Y"), "ge")
+    let la = substitute(la, "@@MAUTHOR@@", "lefloc_l", "ge")
+    execute "silent %s,^## Last update.*," . la . ",ge"
+    let lu = "** Last update @@MDATE@@ @@MAUTHOR@@"
+    let lu = substitute(lu, "@@MDATE@@", strftime("%a %b %d %H:%M:%S %Y"), "ge")
+    let lu = substitute(lu, "@@MAUTHOR@@", "lefloc_l", "ge")
+    execute "silent %s,^\*\* Last update.*," . lu . ",ge"
+    call setpos('.', save_cursor)
+  endfunction
 
+  function! SetHeader()
+    let save_cursor  = getpos(".")
+    execute "%s,@@FNAME@@," . expand("%:t") . ",ge"
+    execute "silent %s,@@HDR_NAME@@," . toupper(substitute(expand("%:t"),'\..*$',  "","ge")) . ",ge"
+    execute "%s,@@PNAME@@," . substitute(substitute(expand("%:p"),'/[^/]*$', "","ge"), "^.*/", "", "ge") . ",ge"
+    execute "%s,@@FPATH@@," . substitute(expand("%:p"), '/[^/]*$', "", "ge") . ",ge"
+    execute "%s,@@AUTHOR@@," . $NAME . ",ge"
+    execute "%s,@@AUTHORMAIL@@,lefloc_l@epitech.eu,ge"
+    execute "%s,@@CDATE@@," . strftime("%a %b %d %H:%M:%S %Y") . ",ge"
+    call setpos('.', save_cursor)
+  endfunction
 
-function! SetHeader()
-  let save_cursor  = getpos(".")
-  execute "%s,@@FNAME@@," . expand("%:t") . ",ge"
-  execute "silent %s,@@HDR_NAME@@," . toupper(substitute(expand("%:t"),'\..*$',  "","ge")) . ",ge"
-  execute "%s,@@PNAME@@," . substitute(substitute(expand("%:p"),'/[^/]*$', "","ge"), "^.*/", "", "ge") . ",ge"
-  execute "%s,@@FPATH@@," . substitute(expand("%:p"), '/[^/]*$', "", "ge") . ",ge"
-  execute "%s,@@AUTHOR@@," . $NAME . ",ge"
-  execute "%s,@@AUTHORMAIL@@,lefloc_l@epitech.eu,ge"
-  execute "%s,@@CDATE@@," . strftime("%a %b %d %H:%M:%S %Y") . ",ge"
-  call setpos('.', save_cursor)
-endfunction
+  function! Epi_CHHeader_Insert()
+    0r ~/.vim/c_hdr_epi.tpl
+    call SetHeader()
+    call UpdateHeaderDate()
+    normal G
+    normal dd
+    let save_cursor = getpos(".")
+    let save_cursor[1] = save_cursor[1] - 2
+    call setpos(".", save_cursor)
+  endfunction
 
+  function! Epi_CHeader_Insert()
+    0r ~/.vim/c_epi.tpl
+    call SetHeader()
+    call UpdateHeaderDate()
+    normal G
+  endfunction
 
-function! Epi_CHHeader_Insert()
-  0r ~/.vim/c_hdr_epi.tpl
-  call SetHeader()
-  call UpdateHeaderDate()
-  normal G
-  normal dd
-  let save_cursor = getpos(".")
-  let save_cursor[1] = save_cursor[1] - 2
-  call setpos(".", save_cursor)
-endfunction
+  function! SetCours()
+    let save_cursor  = getpos(".")
+    execute "%s,@@FNAME@@," . substitute(expand("%:t:r"), '/[^/]*$', "", "ge") . ",ge"
+    execute "%s,@@CDATE@@," . strftime("%a %b %d %H:%M:%S %Y") . ",ge"
+  endfunction
 
-function! Epi_CHeader_Insert()
-  0r ~/.vim/c_epi.tpl
-  call SetHeader()
-  call UpdateHeaderDate()
-  normal G
-endfunction
+  function! Create_cours_Insert()
+    0r ~/.vim/cours.tpl
+    call SetCours()
+    normal G
+  endfunction
+"" ==================== }
 
-function! SetCours()
-  let save_cursor  = getpos(".")
-  execute "%s,@@FNAME@@," . substitute(expand("%:t:r"), '/[^/]*$', "", "ge") . ",ge"
-  execute "%s,@@CDATE@@," . strftime("%a %b %d %H:%M:%S %Y") . ",ge"
-endfunction
-
-function! Create_cours_Insert()
-  0r ~/.vim/cours.tpl
-  call SetCours()
-  normal G
-endfunction
-
+"         FUNCTIONS
+" =================== {
 function! Create_class(name)
   r ~/.vim/cpp_class.tpl
   execute "%s,@@NAME@@," . a:name . ","
 endfunction
 
-au BufNewFile {*.h{,h}} call Epi_CHHeader_Insert()
-au BufNewFile {*.{c{,c,++,pp},h{,h,pp}},Makefile} call Epi_CHeader_Insert()
-au BufWritePre {*.{c{,c,++,pp},h{,h,pp}},Makefile} call UpdateHeaderDate()
+" ==================== }
 
-  " Supprime automatiquement les espaces de fin de ligne
+" Supprime automatiquement les espaces de fin de ligne
 autocmd BufWritePre * :%s/\s\+$//e
-
-
-
-au BufNewFile {*.cours} call Create_cours_Insert()
 
 " change color for the colorcolumn
 highlight ColorColumn ctermbg=235 guibg=#2c2d27
@@ -483,85 +568,138 @@ au BufNewFile,BufRead {*.{c,h,cpp,hh,cours}} set colorcolumn=80
    match OverLength /\%80v.\+/
  endif
 
-" ========== syntastic
+"       Syntastic
+" =================== {
  let g:syntastic_always_populate_loc_list=1
 " :Error
 " :lnext :lprev
+" ==================== }
 
-" ======= GUI
-set guioptions-=T "hide toolbar
-set guioptions+=e " add tab pages
-set guioptions-=r " ghide right-hand scrollbar
-set guioptions-=L " ghide left-hand scrollbar
 
-if has("autocmd")
-  " Highlight TODO, FIXME, NOTE, etc. NOTE
-  if v:version > 701
-    autocmd Syntax * call matchadd('Todo', '\W\zs\(TRICKS\|TODO\|FIXME\|CHANGED\|???\|BUG\|HACK\)')
-    autocmd Syntax * call matchadd('Debug', '\W\zs\(NOTE\|INFO\|IDEA\)')
+"         GUI
+" =================== {
+  set guioptions-=T "hide toolbar
+  set guioptions+=e " add tab pages
+  set guioptions-=r " ghide right-hand scrollbar
+  set guioptions-=L " ghide left-hand scrollbar
+
+  if has("autocmd")
+    " Highlight TODO, FIXME, NOTE, etc. NOTE
+    if v:version > 701
+      autocmd Syntax * call matchadd('Todo', '\W\zs\(TRICKS\|TODO\|FIXME\|CHANGED\|???\|BUG\|HACK\)')
+      autocmd Syntax * call matchadd('Debug', '\W\zs\(NOTE\|INFO\|IDEA\)')
+    endif
   endif
-endif
 
-""""" ======================= SNIPPETS
-" use c-k
-
-" Use honza's snippets.
-let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
-
-" Enable neosnippet snipmate compatibility mode
-let g:neosnippet#enable_snipmate_compatibility = 1
-
-" For snippet_complete marker.
-if !exists("g:spf13_no_conceal")
-  if has('conceal')
-    set conceallevel=2  concealcursor=i
+  if has('gui_running')
+    set guioptions-=T " Remove the toolbar
+    set lines=40 " 40 lines of text instead of 24
+    if !exists("g:spf13_no_big_font")
+      if LINUX() && has("gui_running")
+        set guifont=Andale\ Mono\ Regular\ 10,Menlo\ Regular\ 10,Consolas\ Regular\ 12,Courier\ New\ Regular\ 12
+      elseif OSX() && has("gui_running")
+        set guifont=Andale\ Mono\ Regular:h16,Menlo\ Regular:h15,Consolas\ Regular:h16,Courier\ New\ Regular:h18
+      elseif WINDOWS() && has("gui_running")
+        set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h10,Courier_New:h10
+      endif
+    endif
   endif
-endif
 
-" Enable neosnippets when using go
-let g:go_snippet_engine = "neosnippet"
+" ==================== }
 
-" Disable the neosnippet preview candidate window
-" When enabled, there can be too much visual noise
-" especially when splits are used.
-set completeopt-=preview
 
-" Plugin key-mappings.
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-  smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-  xmap <C-k>     <Plug>(neosnippet_expand_target)
+"         Snippet
+" =================== {
 
-  " SuperTab like snippets behavior.
-"  imap <expr><TAB> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" \: pumvisible() ? "\<C-n>" : "\<TAB>"
-"  smap <expr><TAB> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)": "\<TAB>"
+  " use c-k
+
+  " Use honza's snippets.
+  let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
+
+  " Enable neosnippet snipmate compatibility mode
+  let g:neosnippet#enable_snipmate_compatibility = 1
 
   " For snippet_complete marker.
-  if has('conceal')
-    set conceallevel=2 concealcursor=i
-    endif
-
-if has('gui_running')
-  set guioptions-=T " Remove the toolbar
-  set lines=40 " 40 lines of text instead of 24
-  if !exists("g:spf13_no_big_font")
-    if LINUX() && has("gui_running")
-      set guifont=Andale\ Mono\ Regular\ 10,Menlo\ Regular\ 10,Consolas\ Regular\ 12,Courier\ New\ Regular\ 12
-    elseif OSX() && has("gui_running")
-      set guifont=Andale\ Mono\ Regular:h16,Menlo\ Regular:h15,Consolas\ Regular:h16,Courier\ New\ Regular:h18
-    elseif WINDOWS() && has("gui_running")
-      set guifont=Andale_Mono:h10,Menlo:h10,Consolas:h10,Courier_New:h10
+  if !exists("g:spf13_no_conceal")
+    if has('conceal')
+      set conceallevel=2  concealcursor=i
     endif
   endif
-endif
 
- " ctrlp {
-let g:ctrlp_working_path_mode = 'ra'
-nnoremap <silent> <D-t> :CtrlP<CR>
-nnoremap <silent> <D-r> :CtrlPMRU<CR>
-let g:ctrlp_custom_ignore = {
-  \ 'dir': '\.git$\|\.hg$\|\.svn$',
-  \ 'file':  '\.exe$\|\.so$\|\.dll$\|\.pyc$' }
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlP'
+  " Enable neosnippets when using go
+  let g:go_snippet_engine = "neosnippet"
 
+  " Disable the neosnippet preview candidate window
+  " When enabled, there can be too much visual noise
+  " especially when splits are used.
+  set completeopt-=preview
+
+"         Ctrlp
+" =================== {
+  let g:ctrlp_working_path_mode = 'ra'
+  nnoremap <silent> <D-t> :CtrlP<CR>
+  nnoremap <silent> <D-r> :CtrlPMRU<CR>
+
+  set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.o " MacOSX/Linux
+  set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
+
+  let g:ctrlp_custom_ignore = {
+    \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+    \ 'file': '\v\.(exe|so|dll)$',
+    \ 'link': 'some_bad_symbolic_links',
+    \ }
+  let g:ctrlp_map = '<c-p>'
+  let g:ctrlp_cmd = 'CtrlP'
+  " ==================== }
+
+" TagBar {
+
+
+" }
+
+
+"       Pliage
+" =====================
+
+" Un plus joli caractère pour le remplissage des libellés
+set fillchars+=fold:·
+
+" Deux colonne pour le folding c'est suffisant
+set foldcolumn=2
+
+" Ma fonction pour les libellés
+function! Viral_FoldingLabel()
+  let line = "".getline(v:foldstart)
+  let line = substitute(line, '\v\/\*|--\s+|\#\s+|"\s+|\*\/|\{'.'\{\{\d=',  '', 'g')
+  let line = substitute(line, '\v^\s+', '', 'g')
+  let line = substitute(line, '\v\s*$', '', 'g')
+
+  if (v:foldlevel>1)
+    let line = repeat(' ',&sw*(v:foldlevel-1)).'❭ '.line
+  else
+    let line = '| '.line
+  endif
+  return line.' '
+endfunction
+
+" Définition des libellés custom
+set foldtext=Viral_FoldingLabel()
+
+" Usage du pliage par marqueurs par défaut
+set foldmethod=marker
+
+" Quelque raccourcis pratiques
+nmap z1 :setlocal foldlevel=0<CR>
+nmap z2 :setlocal foldlevel=1<CR>
+nmap z3 :setlocal foldlevel=2<CR>
+nmap z4 :setlocal foldlevel=3<CR>
+nmap z5 :setlocal foldlevel=4<CR>
+nmap z6 :setlocal foldlevel=6<CR>
+nmap z0 :setlocal foldlevel=9999<CR>
+
+" Masquage des marqueurs
+syntax match Marker "\v\{\{\{\d*" conceal containedin=ALL cchar=❭
+
+
+" ==================== }}}
 

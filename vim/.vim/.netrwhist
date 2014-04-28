@@ -1,3 +1,5 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =1
+let g:netrw_dirhist_cnt =3
 let g:netrw_dirhist_1='/home/loic/rendu/T2Rush1/etape_2/maps'
+let g:netrw_dirhist_2='/home/loic/.config/autostart'
+let g:netrw_dirhist_3='/home/loic/dev/epitech/cpp/Plazza/src'
