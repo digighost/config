@@ -2,8 +2,8 @@ set nocompatible " must be first
 
 " color cursor on insert/normal mode
 
-let &t_SI = "\033]12;white\007"
-let &t_EI = "\033]12;green\007"
+"let &t_SI = "\033]12;white\007"
+"let &t_EI = "\033]12;purple\007"
 
 " Identify platform {
 silent function! OSX()
@@ -337,6 +337,37 @@ set backup
 highlight ExtraWhitespaces ctermbg=RED guibg=#A00000
 highlight ExtraCaractere ctermbg=124 guibg=#A00000
 
+"         Snippet
+" =================== {
+
+  " use c-k
+
+  " Use honza's snippets.
+  let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
+
+  " Enable neosnippet snipmate compatibility mode
+  let g:neosnippet#enable_snipmate_compatibility = 1
+
+  imap <silent><expr><C-k> neosnippet#expandable() ?
+  \ "\<Plug>(neosnippet_expand_or_jump)" : (pumvisible() ?
+      \ "\<C-e>" : "\<Plug>(neosnippet_expand_or_jump)")
+    smap <TAB> <Right><Plug>(neosnippet_jump_or_expand)
+
+  " For snippet_complete marker.
+  if has('conceal')
+    set conceallevel=2  concealcursor=i
+  endif
+
+
+  " Enable neosnippets when using go
+  let g:go_snippet_engine = "neosnippet"
+
+  " Disable the neosnippet preview candidate window
+  " When enabled, there can be too much visual noise
+  " especially when splits are used.
+  set completeopt-=preview
+
+
 "         NerdTree
 " =================== {
 let NERDTreeShowBookmarks=1
@@ -606,33 +637,6 @@ au BufNewFile,BufRead {*.{c,h,cpp,hh,cours}} set colorcolumn=80
   endif
 
 " ==================== }
-
-
-"         Snippet
-" =================== {
-
-  " use c-k
-
-  " Use honza's snippets.
-  let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
-
-  " Enable neosnippet snipmate compatibility mode
-  let g:neosnippet#enable_snipmate_compatibility = 1
-
-  " For snippet_complete marker.
-  if !exists("g:spf13_no_conceal")
-    if has('conceal')
-      set conceallevel=2  concealcursor=i
-    endif
-  endif
-
-  " Enable neosnippets when using go
-  let g:go_snippet_engine = "neosnippet"
-
-  " Disable the neosnippet preview candidate window
-  " When enabled, there can be too much visual noise
-  " especially when splits are used.
-  set completeopt-=preview
 
 "         Ctrlp
 " =================== {

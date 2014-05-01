@@ -297,7 +297,6 @@ up()
 # ========================== #
 alias cal="clear;~/.scripts/conky/gcal_term.sh"
 alias tv='vlc http://mafreebox.freebox.fr/freeboxtv/playlist.m3u'
-alias search="~/.scripts/recherche_google.py"
 alias my_rendu="~/.scripts/safe_rendu/safe_rendu"
 
 alias norme='~/.scripts/norme.py -verbose -score -malloc -return -libc'
@@ -319,7 +318,7 @@ alias :q='read -s -n1 -p "Do you realy want to quit the shell? [y]|n "; if [ "$R
 # Google search
 function google()
 {
-  ~/documents/firefox/firefox "http://www.google.com/search?&num=100&q=${@}" &
+  eval $navig "http://www.google.com/search?&num=100&q=${@}" &
 }
 
 # ========================================================== #
