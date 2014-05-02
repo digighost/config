@@ -30,6 +30,12 @@
 # \W     the  basename  of the current working direcory
 ##
 
+if [ -f ~/.bashrc_local ]; then
+ . ~/.bashrc_local
+fi
+
+# bookmarks script
+source ~/.scripts/dirb.sh
 
 # ========================================================== #
 # ENV
@@ -173,8 +179,10 @@ alias ocaml="rlwrap ocaml"
 
 alias todo='~/.scripts/todoprog/todo.sh'
 
+alias tmux='tmux -2' # tmux arg for set true colors on vim
+
 function rm() {
-	mv "$@" "/${HOME}/.local/share/Trash/files/"
+	mv "$@" $TRASH_DIR
 }
 
 function nh() {
@@ -301,7 +309,7 @@ alias my_rendu="~/.scripts/safe_rendu/safe_rendu"
 
 alias norme='~/.scripts/norme.py -verbose -score -malloc -return -libc'
 alias sbt='~/.scripts/SublimeText2/sublime_text'
-alias c='gcc *.c -W -Wall -Werror -Wextra ; ./a.out | cat -e'
+alias c='gcc *.c -W -Wall -Wextra ; ./a.out'
 
 alias upgrade='sudo aptitude update && aptitude dist-upgrade && aptitude clean'
 
@@ -311,9 +319,10 @@ alias sweep='find ~ -type f \( -name '*.swp' -o -name 'wget.log' -o -name 'fooba
 alias install='sudo apt-get install'
 alias whead="curl --head $1"
 # empty trash
-alias trash='sudo rm -fr ~/.local/share/Trash/* && sudo rm -fr /root/.local/share/Trash/* && sudo rm -fr /root/.Trash && sudo rm -fr ~/.Trash'
-alias bashrc='geany ~/.bashrc'
+alias trash='sudo rm -fr ~/.local/share/Trash/files/* && sudo rm -fr /root/.local/share/Trash/* && sudo rm -fr /root/.Trash && sudo rm -fr ~/.Trash'
+alias bashrc='gvim ~/.bashrc'
 alias :q='read -s -n1 -p "Do you realy want to quit the shell? [y]|n "; if [ "$REPLY" = y -o "$REPLY" = Y -o "$REPLY" = " " -o "$REPLY" = "" ]; then exit; else echo; unset REPLY; fi'
+alias uml='java -jar /opt/argouml-0.34/argouml.jar &'
 
 # Google search
 function google()
@@ -444,18 +453,18 @@ argc()
     echo $count;
 }
 
-vim()
+vim_Save()
 {
-    if [[ `argc "$@"` > 1 ]]; then /usr/bin/vim $@;
-        elif [ $1 = '' ]; then /usr/bin/vim;
-        elif [ ! -f $1 ] || [ -w $1 ]; then /usr/bin/vim $@;
+    if [[ `argc "$@"` > 1 ]]; then vim $@;
+        elif [ $1 = '' ]; then vim;
+        elif [ ! -f $1 ] || [ -w $1 ]; then vim $@;
     else
         echo -n "File is readonly. Edit as root? (Y/n): "
         read -n 1 yn; echo;
-        if [ "$yn" = 'n' ] || [ "$yn" = 'N' ];
-            then /usr/bin/vim $*;
+        if [ "$yn" = 'n' ] || [ "$yn" = 'N' ]; then
+          vim $*;
         else
-            sudo /usr/bin/vim $*;
+            sudo vim $*;
         fi
     fi
 }
