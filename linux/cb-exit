@@ -57,21 +57,27 @@ class cb_exit:
 
 	def create_window(self):
 		self.window = gtk.Window()
+                self.window.set_name('MyWindow')
 		self.window.set_decorated(False)
 		self.window.set_border_width(10)
 		self.window.set_size_request(200, 250)
 		self.window.set_resizable(False)
 		self.window.set_keep_above(True)
+                self.window.set_opacity(1)
 		self.window.stick
 		self.window.set_position(1)
 		self.window.connect("delete_event", gtk.main_quit)
 		windowicon = self.window.render_icon(gtk.STOCK_QUIT, gtk.ICON_SIZE_MENU)
 		self.window.set_icon(windowicon)
 
-
 		#Create HBox for buttons
 		self.button_box = gtk.VBox()
 		self.button_box.show()
+
+                self.pic = gtk.Image();
+                self.pic.set_from_file("/home/loic/images/icon-kali.png");
+                self.pic.show();
+		self.button_box.pack_start(self.pic)
 
 		#Cancel button
 		self.cancel = gtk.Button(stock = gtk.STOCK_CANCEL)
@@ -143,11 +149,11 @@ class cb_exit:
 	def keypress(self, widget, event) :
 		if event.keyval == gtk.keysyms.Escape :
 			gtk.main_quit()
-	 
+
 	def __init__(self):
 		self.create_window()
 		self.window.connect("key-press-event", self.keypress)
-		self.window.show()	
+		self.window.show()
 
 	#def __init__(self):
 	# self.create_window()
